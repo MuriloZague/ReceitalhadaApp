@@ -1,6 +1,5 @@
 import { Image } from "expo-image";
 import {
-  Platform,
   StyleSheet,
   View,
   Text,
@@ -8,6 +7,7 @@ import {
   FlatList,
   ImageBackground,
   TouchableOpacity,
+  ScrollView,
 } from "react-native";
 import React, { useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
@@ -76,78 +76,73 @@ export default function HomeScreen() {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
-      <FlatList
-        data={receitas}
-        keyExtractor={(item) => item.id}
-        showsVerticalScrollIndicator={false}
-        ListHeaderComponent={
-          <>
-            <View style={styles.headerApp}>
-              <Image
-                style={{ width: 155, height: 30 }}
-                source={require("../../assets/images/logoReceitalhada.png")}
-              />
-              <Image
-                style={{ width: 35, height: 35 }}
-                source={require("../../assets/images/profile-icon.svg")}
-              />
-            </View>
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <View style={styles.headerApp}>
+          <Image
+            style={{ width: 155, height: 30 }}
+            source={require("../../assets/images/logoReceitalhada.png")}
+          />
+          <Image
+            style={{ width: 35, height: 35 }}
+            source={require("../../assets/images/profile-icon.svg")}
+          />
+        </View>
 
-            <View style={styles.titleContainer}>
-              <Text style={styles.title}>
-                Encontre A{" "}
-                <Text style={{ color: "#E96B35" }}>Melhor Receita</Text> Para A
-                Sua Fome
-              </Text>
-              <View style={styles.inputWrapper}>
-                <Ionicons
-                  name="search"
-                  size={20}
-                  color="#888"
-                  style={styles.searchIcon}
-                />
-                <TextInput
-                  style={styles.input}
-                  onChangeText={setText}
-                  value={text}
-                  placeholder="Procure por uma receita"
-                  placeholderTextColor="#999999"
-                  keyboardType="default"
-                />
+        <View style={styles.titleContainer}>
+          <Text style={styles.title}>
+            Encontre A <Text style={{ color: "#E96B35" }}>Melhor Receita</Text>{" "}
+            Para A Sua Fome
+          </Text>
+          <View style={styles.inputWrapper}>
+            <Ionicons
+              name="search"
+              size={20}
+              color="#888"
+              style={styles.searchIcon}
+            />
+            <TextInput
+              style={styles.input}
+              onChangeText={setText}
+              value={text}
+              placeholder="Procure por uma receita"
+              placeholderTextColor="#999999"
+              keyboardType="default"
+            />
+          </View>
+        </View>
+
+        <View style={styles.cardView}>
+          <FlatList
+            data={categorias}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            keyExtractor={(item) => item.id}
+            contentContainerStyle={{ paddingHorizontal: 10, gap: 12 }}
+            renderItem={({ item }) => (
+              <View style={styles.cardShadow}>
+                <ImageBackground
+                  source={item.imagem}
+                  style={styles.card}
+                  imageStyle={{ borderRadius: 18 }}
+                >
+                  <View style={styles.overlay} />
+                  <Text style={styles.cardText}>{item.nome}</Text>
+                </ImageBackground>
               </View>
-            </View>
-
-            <View style={styles.cardView}>
-              <FlatList
-                data={categorias}
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                keyExtractor={(item) => item.id}
-                contentContainerStyle={{ paddingHorizontal: 10, gap: 12 }}
-                renderItem={({ item }) => (
-                  <View>
-                    <ImageBackground
-                      source={item.imagem}
-                      style={styles.card}
-                      imageStyle={{ borderRadius: 18 }}
-                    >
-                      <View style={styles.overlay} />
-                      <Text style={styles.cardText}>{item.nome}</Text>
-                    </ImageBackground>
-                  </View>
-                )}
-              />
-            </View>
-            <Text style={styles.minorTitle}>
-              Principais <Text style={{ color: "#E96B35" }}>Receitas</Text>
-            </Text>
-          </>
-        }
-        renderItem={({ item }) => (
-          <TouchableOpacity style={[styles.receitaCard, { elevation: 0, shadowColor: 'transparent' }]}  activeOpacity={0.8}>
+            )}
+          />
+        </View>
+        <Text style={styles.minorTitle}>
+          Principais <Text style={{ color: "#E96B35" }}>Receitas</Text>
+        </Text>
+        {receitas.map((item) => (
+          <TouchableOpacity
+            key={item.id}
+            style={[styles.receitaCard, { elevation: 0, shadowColor: 'transparent' }]} 
+            activeOpacity={0.8}
+          >
             <Text style={styles.receitaNome}>{item.nome}</Text>
             <Image source={item.imagem} style={styles.receitaImagem} />
-
             <View style={styles.receitaFooter}>
               <Image source={item.autorFoto} style={styles.autorAvatar} />
               <View style={styles.receitaInfo}>
@@ -162,8 +157,8 @@ export default function HomeScreen() {
               </View>
             </View>
           </TouchableOpacity>
-        )}
-      />
+        ))}
+      </ScrollView>
     </SafeAreaView>
   );
 }
@@ -217,6 +212,14 @@ const styles = StyleSheet.create({
   cardView: {
     marginTop: 20,
   },
+  cardShadow: {
+    borderRadius: 18,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+    elevation: 6,
+  },
   card: {
     width: 180,
     height: 90,
@@ -237,16 +240,17 @@ const styles = StyleSheet.create({
     borderRadius: 18,
   },
   receitaCard: {
-    marginHorizontal: 20,
+    marginHorizontal: 24,
     marginBottom: 24,
     backgroundColor: "#fff",
     borderRadius: 16,
+    shadowRadius: 8,
     elevation: 4,
     paddingBottom: 14,
   },
   receitaNome: {
     fontSize: 19,
-    fontWeight: 900,
+    fontWeight: "900",
     textAlign: "center",
     paddingHorizontal: 16,
     paddingTop: 14,
@@ -254,8 +258,7 @@ const styles = StyleSheet.create({
   },
   receitaImagem: {
     width: "100%",
-    height: 200,
-    borderRadius: 0,
+    height: 185,
   },
   receitaFooter: {
     flexDirection: "row",
@@ -272,7 +275,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#ddd",
   },
   receitaInfo: {
-    display: 'flex',
+    flex: 1,
   },
   autorNome: {
     fontSize: 15,

@@ -7,18 +7,13 @@ import {
   TextInput,
   FlatList,
   ImageBackground,
+  TouchableOpacity,
 } from "react-native";
 import React, { useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
+import { SafeAreaView } from "react-native-safe-area-context";
 
-import { HelloWave } from "@/components/hello-wave";
-import ParallaxScrollView from "@/components/parallax-scroll-view";
-import { ThemedText } from "@/components/themed-text";
-import { ThemedView } from "@/components/themed-view";
-import { Link } from "expo-router";
-import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-
-export default function Recipes() {
+export default function HomeScreen() {
   const [text, setText] = useState("");
 
   const categorias = [
@@ -49,64 +44,126 @@ export default function Recipes() {
     },
   ];
 
+  const receitas = [
+    {
+      id: "1",
+      nome: "Bolos famosos da tia Flávia",
+      imagem: require("../../assets/images/brazilianreceitas.jpg"),
+      autor: "Tia Flávia",
+      autorFoto: require("../../assets/images/profile-icon.svg"),
+      data: "18/10/2024 às 15:35",
+      favoritos: 16,
+    },
+    {
+      id: "2",
+      nome: "Macarrão ao molho vermelho",
+      imagem: require("../../assets/images/massas.jpg"),
+      autor: "Tio Marcio",
+      autorFoto: require("../../assets/images/profile-icon.svg"),
+      data: "20/10/2024 às 10:00",
+      favoritos: 32,
+    },
+    {
+      id: "3",
+      nome: "Suco Especial",
+      imagem: require("../../assets/images/sucos.jpg"),
+      autor: "Tio Marcio",
+      autorFoto: require("../../assets/images/profile-icon.svg"),
+      data: "20/10/2024 às 10:00",
+      favoritos: 32,
+    },
+  ];
+
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <View>
-        <View style={styles.headerApp}>
-          <Image
-            style={{ width: 155, height: 30 }}
-            source={require("../../assets/images/logoReceitalhada.png")}
-          />
-          <Image
-            style={{ width: 35, height: 35 }}
-            source={require("../../assets/images/profile-icon.svg")}
-          />
-        </View>
-        <View style={styles.titleContainer}>
-          <Text style={styles.title}>
-            Encontre A <Text style={{ color: "#E96B35" }}>Melhor Receita</Text>{" "}
-            Para A Sua Fome
-          </Text>
-          <View style={styles.inputWrapper}>
-            <Ionicons
-              name="search"
-              size={20}
-              color="#888"
-              style={styles.searchIcon}
-            />
-            <TextInput
-              style={styles.input}
-              onChangeText={setText}
-              value={text}
-              placeholder="Procure por uma receita"
-              placeholderTextColor="#999999"
-              keyboardType="default"
-            />
-          </View>
-        </View>
-        <View style={styles.cardView}>
-          <FlatList
-            data={categorias}
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            keyExtractor={(item) => item.id}
-            contentContainerStyle={{ paddingHorizontal: 10, gap: 12 }}
-            renderItem={({ item }) => (
-              <ImageBackground
-                source={item.imagem}
-                style={styles.card}
-                imageStyle={{ borderRadius: 18 }}
-              >
-                <View style={styles.overlay} />
-                <Text style={styles.cardText}>{item.nome}</Text>
-              </ImageBackground>
-            )}
-          />
-        </View>
-        <View>
-          <Text style={styles.minorTitle}>Principais <Text style={{ color: "#E96B35" }}>Receitas</Text></Text>
-        </View>
-      </View>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
+      <FlatList
+        data={receitas}
+        keyExtractor={(item) => item.id}
+        showsVerticalScrollIndicator={false}
+        ListHeaderComponent={
+          <>
+            <View style={styles.headerApp}>
+              <Image
+                style={{ width: 155, height: 30 }}
+                source={require("../../assets/images/logoReceitalhada.png")}
+              />
+              <Image
+                style={{ width: 35, height: 35 }}
+                source={require("../../assets/images/profile-icon.svg")}
+              />
+            </View>
+
+            <View style={styles.titleContainer}>
+              <Text style={styles.title}>
+                Encontre A{" "}
+                <Text style={{ color: "#E96B35" }}>Melhor Receita</Text> Para A
+                Sua Fome
+              </Text>
+              <View style={styles.inputWrapper}>
+                <Ionicons
+                  name="search"
+                  size={20}
+                  color="#888"
+                  style={styles.searchIcon}
+                />
+                <TextInput
+                  style={styles.input}
+                  onChangeText={setText}
+                  value={text}
+                  placeholder="Procure por uma receita"
+                  placeholderTextColor="#999999"
+                  keyboardType="default"
+                />
+              </View>
+            </View>
+
+            <View style={styles.cardView}>
+              <FlatList
+                data={categorias}
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                keyExtractor={(item) => item.id}
+                contentContainerStyle={{ paddingHorizontal: 10, gap: 12 }}
+                renderItem={({ item }) => (
+                  <View>
+                    <ImageBackground
+                      source={item.imagem}
+                      style={styles.card}
+                      imageStyle={{ borderRadius: 18 }}
+                    >
+                      <View style={styles.overlay} />
+                      <Text style={styles.cardText}>{item.nome}</Text>
+                    </ImageBackground>
+                  </View>
+                )}
+              />
+            </View>
+            <Text style={styles.minorTitle}>
+              Principais <Text style={{ color: "#E96B35" }}>Receitas</Text>
+            </Text>
+          </>
+        }
+        renderItem={({ item }) => (
+          <TouchableOpacity style={[styles.receitaCard, { elevation: 0, shadowColor: 'transparent' }]}  activeOpacity={0.8}>
+            <Text style={styles.receitaNome}>{item.nome}</Text>
+            <Image source={item.imagem} style={styles.receitaImagem} />
+
+            <View style={styles.receitaFooter}>
+              <Image source={item.autorFoto} style={styles.autorAvatar} />
+              <View style={styles.receitaInfo}>
+                <Text style={styles.autorNome}>{item.autor}</Text>
+                <Text style={styles.receitaData}>{item.data}</Text>
+                <View style={styles.favoritosRow}>
+                  <Ionicons name="star" size={14} color="#F5A623" />
+                  <Text style={styles.favoritosText}>
+                    {item.favoritos} favoritos
+                  </Text>
+                </View>
+              </View>
+            </View>
+          </TouchableOpacity>
+        )}
+      />
     </SafeAreaView>
   );
 }
@@ -116,7 +173,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 30,
     paddingBottom: 16,
     marginTop: 16,
-    display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
     borderBottomWidth: 8,
@@ -129,26 +185,16 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     textAlign: "center",
-    fontWeight: 500,
+    fontWeight: "500",
     paddingHorizontal: 20,
   },
   minorTitle: {
     fontSize: 24,
     textAlign: "center",
-    fontWeight: 600,
+    fontWeight: "600",
     paddingHorizontal: 20,
-    marginTop: 25,
-  },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: "absolute",
+    marginTop: 28,
+    marginBottom: 12,
   },
   inputWrapper: {
     marginTop: 25,
@@ -186,8 +232,65 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   overlay: {
-  ...StyleSheet.absoluteFillObject,
-  backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  borderRadius: 18,
-},
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    borderRadius: 18,
+  },
+  receitaCard: {
+    marginHorizontal: 20,
+    marginBottom: 24,
+    backgroundColor: "#fff",
+    borderRadius: 16,
+    elevation: 4,
+    paddingBottom: 14,
+  },
+  receitaNome: {
+    fontSize: 19,
+    fontWeight: 900,
+    textAlign: "center",
+    paddingHorizontal: 16,
+    paddingTop: 14,
+    paddingBottom: 10,
+  },
+  receitaImagem: {
+    width: "100%",
+    height: 200,
+    borderRadius: 0,
+  },
+  receitaFooter: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingTop: 12,
+    gap: 12,
+  },
+  autorAvatar: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    borderWidth: 2,
+    borderColor: "#E96B35",
+    backgroundColor: "#ddd",
+  },
+  receitaInfo: {
+    display: 'flex',
+  },
+  autorNome: {
+    fontSize: 15,
+    fontWeight: "700",
+    color: "#222",
+  },
+  receitaData: {
+    fontSize: 13,
+    color: "#888",
+  },
+  favoritosRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+    marginTop: 2,
+  },
+  favoritosText: {
+    fontSize: 13,
+    color: "#555",
+  },
 });
