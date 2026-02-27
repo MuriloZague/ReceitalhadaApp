@@ -95,8 +95,9 @@ export default function HomeScreen() {
               <ImageBackground
                 source={item.imagem}
                 style={styles.card}
-                imageStyle={{ borderRadius: 12 }}
+                imageStyle={{ borderRadius: 18 }}
               >
+                <View style={styles.overlay} />
                 <Text style={styles.cardText}>{item.nome}</Text>
               </ImageBackground>
             )}
@@ -170,10 +171,13 @@ const styles = StyleSheet.create({
   cardText: {
     color: "#fff",
     fontWeight: "bold",
-    fontSize: 16,
+    fontSize: 18,
+    width: 85,
     textAlign: "center",
-    textShadowColor: "rgba(0,0,0,0.8)",
-    textShadowOffset: { width: 1, height: 1 },
-    textShadowRadius: 4,
   },
+  overlay: {
+  ...StyleSheet.absoluteFillObject,
+  backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  borderRadius: 18,
+},
 });
