@@ -12,6 +12,7 @@ import {
 import React, { useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
+//import Recipes from "@/components/recipes";
 
 export default function HomeScreen() {
   const [text, setText] = useState("");
