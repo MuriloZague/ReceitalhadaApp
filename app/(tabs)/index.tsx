@@ -37,7 +37,16 @@ export default function HomeScreen() {
       nome: "Sucos",
       imagem: require("../../assets/images/sucos.jpg"),
     },
-    
+    {
+      id: "4",
+      nome: "Doces",
+      imagem: require("../../assets/images/doces.jpg"),
+    },
+    {
+      id: "5",
+      nome: "Vegetais",
+      imagem: require("../../assets/images/vegetais.jpg"),
+    },
   ];
 
   return (
@@ -75,13 +84,13 @@ export default function HomeScreen() {
             />
           </View>
         </View>
-        <View>
+        <View style={styles.cardView}>
           <FlatList
             data={categorias}
             horizontal
             showsHorizontalScrollIndicator={false}
             keyExtractor={(item) => item.id}
-            contentContainerStyle={{ paddingHorizontal: 30, gap: 12 }}
+            contentContainerStyle={{ paddingHorizontal: 10, gap: 12 }}
             renderItem={({ item }) => (
               <ImageBackground
                 source={item.imagem}
@@ -148,9 +157,12 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     fontSize: 15,
   },
+  cardView: {
+    marginTop: 20,
+  },
   card: {
-    width: 150,
-    height: 100,
+    width: 180,
+    height: 90,
     justifyContent: "center",
     alignItems: "center",
     overflow: "hidden",
