@@ -1,5 +1,13 @@
 import { Image } from "expo-image";
-import { Platform, StyleSheet, View, Text, TextInput } from "react-native";
+import {
+  Platform,
+  StyleSheet,
+  View,
+  Text,
+  TextInput,
+  FlatList,
+  ImageBackground,
+} from "react-native";
 import React, { useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
 
@@ -12,6 +20,25 @@ import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 
 export default function HomeScreen() {
   const [text, setText] = useState("");
+
+  const categorias = [
+    {
+      id: "1",
+      nome: "Receitas Brasileiras",
+      imagem: require("../../assets/images/brazilianreceitas.jpg"),
+    },
+    {
+      id: "2",
+      nome: "Massas",
+      imagem: require("../../assets/images/massas.jpg"),
+    },
+    {
+      id: "3",
+      nome: "Sucos",
+      imagem: require("../../assets/images/sucos.jpg"),
+    },
+    
+  ];
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -43,10 +70,28 @@ export default function HomeScreen() {
               onChangeText={setText}
               value={text}
               placeholder="Procure por uma receita"
-              placeholderTextColor='#999999'
+              placeholderTextColor="#999999"
               keyboardType="default"
             />
           </View>
+        </View>
+        <View>
+          <FlatList
+            data={categorias}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            keyExtractor={(item) => item.id}
+            contentContainerStyle={{ paddingHorizontal: 30, gap: 12 }}
+            renderItem={({ item }) => (
+              <ImageBackground
+                source={item.imagem}
+                style={styles.card}
+                imageStyle={{ borderRadius: 12 }}
+              >
+                <Text style={styles.cardText}>{item.nome}</Text>
+              </ImageBackground>
+            )}
+          />
         </View>
       </View>
     </SafeAreaView>
@@ -102,5 +147,21 @@ const styles = StyleSheet.create({
     paddingRight: 16,
     borderRadius: 100,
     fontSize: 15,
+  },
+  card: {
+    width: 150,
+    height: 100,
+    justifyContent: "center",
+    alignItems: "center",
+    overflow: "hidden",
+  },
+  cardText: {
+    color: "#fff",
+    fontWeight: "bold",
+    fontSize: 16,
+    textAlign: "center",
+    textShadowColor: "rgba(0,0,0,0.8)",
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 4,
   },
 });
