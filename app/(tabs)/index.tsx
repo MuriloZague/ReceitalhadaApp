@@ -1,5 +1,5 @@
 import { Image } from 'expo-image';
-import { Platform, StyleSheet, View } from 'react-native';
+import { Platform, StyleSheet, View, Text } from 'react-native';
 
 import { HelloWave } from '@/components/hello-wave';
 import ParallaxScrollView from '@/components/parallax-scroll-view';
@@ -12,11 +12,18 @@ export default function HomeScreen() {
   return (
     <SafeAreaView style={{flex: 1}}>
     <View>
-      <View style={{ marginHorizontal: 30, marginTop: 10 }}>
+      <View style={styles.headerApp}>
         <Image
           style={{ width: 155, height: 30 }}
           source={require('../../assets/images/logoReceitalhada.png')}
         />
+        <Image
+        style={{ width:35, height: 35}}
+        source={require('../../assets/images/profile-icon.svg')}
+        />
+      </View>
+      <View style={styles.titleContainer}>
+        <Text style={styles.title}>Encontre A <Text style={{color: '#E96B35'}}>Melhor Receita</Text> Para A Sua Fome</Text>
       </View>
     </View>
     </SafeAreaView>
@@ -24,10 +31,24 @@ export default function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
+  headerApp: {
+    paddingHorizontal: 30,
+    paddingBottom: 16,
+    marginTop: 16,
+    display: 'flex',
     flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
+    justifyContent: 'space-between',
+    borderBottomWidth: 8,
+    borderBottomColor: '#E96B35'
+  },
+  titleContainer: {
+    paddingHorizontal: 50,
+    paddingTop: 20,
+  },
+  title: {
+    fontSize: 28,
+    textAlign: 'center',
+    fontWeight: 500,
   },
   stepContainer: {
     gap: 8,
