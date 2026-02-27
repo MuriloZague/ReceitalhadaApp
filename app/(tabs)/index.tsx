@@ -52,7 +52,7 @@ export default function HomeScreen() {
       imagem: require("../../assets/images/brazilianreceitas.jpg"),
       autor: "Tia Flávia",
       autorFoto: require("../../assets/images/profile-icon.svg"),
-      data: "18/10/2024 às 15:35",
+      data: "18/10/2025 às 15:35",
       favoritos: 16,
     },
     {
@@ -61,7 +61,7 @@ export default function HomeScreen() {
       imagem: require("../../assets/images/massas.jpg"),
       autor: "Tio Marcio",
       autorFoto: require("../../assets/images/profile-icon.svg"),
-      data: "20/10/2024 às 10:00",
+      data: "20/02/2026 às 10:00",
       favoritos: 32,
     },
     {
@@ -70,8 +70,8 @@ export default function HomeScreen() {
       imagem: require("../../assets/images/sucos.jpg"),
       autor: "Tio Marcio",
       autorFoto: require("../../assets/images/profile-icon.svg"),
-      data: "20/10/2024 às 10:00",
-      favoritos: 32,
+      data: "21/02/2026 às 12:59",
+      favoritos: 322,
     },
   ];
 
@@ -139,7 +139,10 @@ export default function HomeScreen() {
         {receitas.map((item) => (
           <TouchableOpacity
             key={item.id}
-            style={[styles.receitaCard, { elevation: 0, shadowColor: 'transparent' }]} 
+            style={[
+              styles.receitaCard,
+              { elevation: 0, shadowColor: "transparent" },
+            ]}
             activeOpacity={0.8}
           >
             <Text style={styles.receitaNome}>{item.nome}</Text>
