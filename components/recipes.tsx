@@ -12,36 +12,35 @@ import {
 import React, { useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
-//import Recipes from "@/components/recipes";
 
-export default function HomeScreen() {
+export default function Recipes() {
   const [text, setText] = useState("");
 
   const categorias = [
     {
       id: "1",
       nome: "Receitas Brasileiras",
-      imagem: require("../../assets/images/brazilianreceitas.jpg"),
+      imagem: require("../assets/images/brazilianreceitas.jpg"),
     },
     {
       id: "2",
       nome: "Massas",
-      imagem: require("../../assets/images/massas.jpg"),
+      imagem: require("../assets/images/massas.jpg"),
     },
     {
       id: "3",
       nome: "Sucos",
-      imagem: require("../../assets/images/sucos.jpg"),
+      imagem: require("../assets/images/sucos.jpg"),
     },
     {
       id: "4",
       nome: "Doces",
-      imagem: require("../../assets/images/doces.jpg"),
+      imagem: require("../assets/images/doces.jpg"),
     },
     {
       id: "5",
       nome: "Vegetais",
-      imagem: require("../../assets/images/vegetais.jpg"),
+      imagem: require("../assets/images/vegetais.jpg"),
     },
   ];
 
@@ -49,27 +48,27 @@ export default function HomeScreen() {
     {
       id: "1",
       nome: "Bolos famosos da tia Flávia",
-      imagem: require("../../assets/images/brazilianreceitas.jpg"),
+      imagem: require("../assets/images/brazilianreceitas.jpg"),
       autor: "Tia Flávia",
-      autorFoto: require("../../assets/images/profile-icon.svg"),
+      autorFoto: require("../assets/images/profile-icon.svg"),
       data: "18/10/2025 às 15:35",
       favoritos: 16,
     },
     {
       id: "2",
       nome: "Macarrão ao molho vermelho",
-      imagem: require("../../assets/images/massas.jpg"),
+      imagem: require("../assets/images/massas.jpg"),
       autor: "Tio Marcio",
-      autorFoto: require("../../assets/images/profile-icon.svg"),
+      autorFoto: require("../assets/images/profile-icon.svg"),
       data: "20/02/2026 às 10:00",
       favoritos: 32,
     },
     {
       id: "3",
       nome: "Suco Especial",
-      imagem: require("../../assets/images/sucos.jpg"),
+      imagem: require("../assets/images/sucos.jpg"),
       autor: "Tio Marcio",
-      autorFoto: require("../../assets/images/profile-icon.svg"),
+      autorFoto: require("../assets/images/profile-icon.svg"),
       data: "21/02/2026 às 12:59",
       favoritos: 322,
     },
@@ -77,62 +76,6 @@ export default function HomeScreen() {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
-      <ScrollView showsVerticalScrollIndicator={false}>
-        <View style={styles.headerApp}>
-          <Image
-            style={{ width: 155, height: 30 }}
-            source={require("../../assets/images/logoReceitalhada.png")}
-          />
-          <Image
-            style={{ width: 35, height: 35 }}
-            source={require("../../assets/images/profile-icon.svg")}
-          />
-        </View>
-
-        <View style={styles.titleContainer}>
-          <Text style={styles.title}>
-            Encontre A <Text style={{ color: "#E96B35" }}>Melhor Receita</Text>{" "}
-            Para A Sua Fome
-          </Text>
-          <View style={styles.inputWrapper}>
-            <Ionicons
-              name="search"
-              size={20}
-              color="#888"
-              style={styles.searchIcon}
-            />
-            <TextInput
-              style={styles.input}
-              onChangeText={setText}
-              value={text}
-              placeholder="Procure por uma receita"
-              placeholderTextColor="#999999"
-              keyboardType="default"
-            />
-          </View>
-        </View>
-
-        <View style={styles.cardView}>
-          <FlatList
-            data={categorias}
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            keyExtractor={(item) => item.id}
-            contentContainerStyle={{ paddingHorizontal: 10, gap: 12 }}
-            renderItem={({ item }) => (
-              <View style={styles.cardShadow}>
-                <ImageBackground
-                  source={item.imagem}
-                  style={styles.card}
-                  imageStyle={{ borderRadius: 18 }}
-                >
-                  <View style={styles.overlay} />
-                  <Text style={styles.cardText}>{item.nome}</Text>
-                </ImageBackground>
-              </View>
-            )}
-          />
-        </View>
         <Text style={styles.minorTitle}>
           Principais <Text style={{ color: "#E96B35" }}>Receitas</Text>
         </Text>
@@ -162,7 +105,6 @@ export default function HomeScreen() {
             </View>
           </TouchableOpacity>
         ))}
-      </ScrollView>
     </SafeAreaView>
   );
 }
@@ -192,7 +134,6 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontWeight: "600",
     paddingHorizontal: 20,
-    marginTop: 28,
     marginBottom: 12,
   },
   inputWrapper: {
