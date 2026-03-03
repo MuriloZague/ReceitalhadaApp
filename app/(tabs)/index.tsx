@@ -67,7 +67,7 @@ export default function HomeScreen() {
     },
     {
       id: "3",
-      nome: "Suco Especial",
+      nome: "Suco de Laranja",
       imagem: require("../../assets/images/sucos.jpg"),
       autor: "Tio Marcio",
       autorFoto: require("../../assets/images/profile-icon.svg"),
@@ -206,8 +206,8 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontWeight: "600",
     paddingHorizontal: 20,
-    marginTop: 28,
-    marginBottom: 12,
+    marginTop: 32,
+    marginBottom: 18,
   },
   inputWrapper: {
     marginTop: 25,
@@ -279,6 +279,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingTop: 14,
     paddingBottom: 10,
+    borderWidth: 1,
+    borderColor: "#dfdfdf",
+    borderTopLeftRadius: 16,
+    borderTopRightRadius: 16,
+    backgroundColor: "#ededed52",
   },
   receitaImagem: {
     width: "100%",
@@ -287,8 +292,14 @@ const styles = StyleSheet.create({
   receitaFooter: {
     flexDirection: "row",
     alignItems: "center",
-    paddingTop: 12,
+    paddingVertical: 10,
+    paddingHorizontal: 8,
     gap: 12,
+    borderWidth: 1,
+    borderColor: "#dfdfdf",
+    borderBottomLeftRadius: 16,
+    borderBottomRightRadius: 16,
+    backgroundColor: "#ededed52",
   },
   autorAvatar: {
     width: 48,
