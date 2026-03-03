@@ -9,13 +9,14 @@ import {
   TouchableOpacity,
   ScrollView,
 } from "react-native";
-import React, { useState } from "react";
+import React, { use, useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
 //import Recipes from "@/components/recipes";
 
 export default function HomeScreen() {
   const [text, setText] = useState("");
+  const [focus, setFocus] = useState(false);
 
   const categorias = [
     {
@@ -73,6 +74,15 @@ export default function HomeScreen() {
       data: "21/02/2026 às 12:59",
       favoritos: 322,
     },
+    {
+      id: "4",
+      nome: "Doces",
+      imagem: require("../../assets/images/doces.jpg"),
+      autor: "Tia Flávia",
+      autorFoto: require("../../assets/images/profile-icon.svg"),
+      data: "22/03/2026 às 15:08",
+      favoritos: 122,
+    },
   ];
 
   return (
@@ -102,12 +112,14 @@ export default function HomeScreen() {
               style={styles.searchIcon}
             />
             <TextInput
-              style={styles.input}
+              style={[styles.input, focus && styles.inputFocused]}
               onChangeText={setText}
               value={text}
               placeholder="Procure por uma receita"
               placeholderTextColor="#999999"
               keyboardType="default"
+              onFocus={() => setFocus(true)}
+              onBlur={() => setFocus(false)}
             />
           </View>
         </View>
@@ -147,7 +159,7 @@ export default function HomeScreen() {
           >
             <Text style={styles.receitaNome}>{item.nome}</Text>
             <TouchableOpacity activeOpacity={0.75}>
-            <Image source={item.imagem} style={styles.receitaImagem} />
+              <Image source={item.imagem} style={styles.receitaImagem} />
             </TouchableOpacity>
             <View style={styles.receitaFooter}>
               <Image source={item.autorFoto} style={styles.autorAvatar} />
@@ -214,6 +226,12 @@ const styles = StyleSheet.create({
     paddingRight: 16,
     borderRadius: 100,
     fontSize: 15,
+    borderWidth: 2,
+    borderColor: "#dfdfdf"
+  },
+  inputFocused: {
+    borderColor: "#E96B35",
+    borderWidth: 2,
   },
   cardView: {
     marginTop: 20,
