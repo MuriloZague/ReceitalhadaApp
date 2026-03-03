@@ -120,7 +120,7 @@ export default function HomeScreen() {
             keyExtractor={(item) => item.id}
             contentContainerStyle={{ paddingHorizontal: 10, gap: 12 }}
             renderItem={({ item }) => (
-              <View style={styles.cardShadow}>
+              <TouchableOpacity activeOpacity={0.8} style={styles.cardShadow}>
                 <ImageBackground
                   source={item.imagem}
                   style={styles.card}
@@ -129,7 +129,7 @@ export default function HomeScreen() {
                   <View style={styles.overlay} />
                   <Text style={styles.cardText}>{item.nome}</Text>
                 </ImageBackground>
-              </View>
+              </TouchableOpacity>
             )}
           />
         </View>
