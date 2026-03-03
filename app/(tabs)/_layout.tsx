@@ -8,7 +8,9 @@ import { Colors } from "@/constants/theme";
 import { useColorScheme } from "@/hooks/use-color-scheme";
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
+  //removing multi color scheme from tab ui
+  //const colorScheme = useColorScheme(); 
+  const colorScheme = null
 
   return (
     <Tabs

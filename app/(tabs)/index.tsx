@@ -9,13 +9,14 @@ import {
   TouchableOpacity,
   ScrollView,
 } from "react-native";
-import React, { useState } from "react";
+import React, { use, useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
 //import Recipes from "@/components/recipes";
 
 export default function HomeScreen() {
   const [text, setText] = useState("");
+  const [focus, setFocus] = useState(false);
 
   const categorias = [
     {
@@ -66,12 +67,21 @@ export default function HomeScreen() {
     },
     {
       id: "3",
-      nome: "Suco Especial",
+      nome: "Suco de Laranja",
       imagem: require("../../assets/images/sucos.jpg"),
       autor: "Tio Marcio",
       autorFoto: require("../../assets/images/profile-icon.svg"),
       data: "21/02/2026 às 12:59",
       favoritos: 322,
+    },
+    {
+      id: "4",
+      nome: "Doces",
+      imagem: require("../../assets/images/doces.jpg"),
+      autor: "Tia Flávia",
+      autorFoto: require("../../assets/images/profile-icon.svg"),
+      data: "22/03/2026 às 15:08",
+      favoritos: 122,
     },
   ];
 
@@ -102,12 +112,14 @@ export default function HomeScreen() {
               style={styles.searchIcon}
             />
             <TextInput
-              style={styles.input}
+              style={[styles.input, focus && styles.inputFocused]}
               onChangeText={setText}
               value={text}
               placeholder="Procure por uma receita"
               placeholderTextColor="#999999"
               keyboardType="default"
+              onFocus={() => setFocus(true)}
+              onBlur={() => setFocus(false)}
             />
           </View>
         </View>
@@ -120,7 +132,7 @@ export default function HomeScreen() {
             keyExtractor={(item) => item.id}
             contentContainerStyle={{ paddingHorizontal: 10, gap: 12 }}
             renderItem={({ item }) => (
-              <View style={styles.cardShadow}>
+              <TouchableOpacity activeOpacity={0.8} style={styles.cardShadow}>
                 <ImageBackground
                   source={item.imagem}
                   style={styles.card}
@@ -129,7 +141,7 @@ export default function HomeScreen() {
                   <View style={styles.overlay} />
                   <Text style={styles.cardText}>{item.nome}</Text>
                 </ImageBackground>
-              </View>
+              </TouchableOpacity>
             )}
           />
         </View>
@@ -143,10 +155,12 @@ export default function HomeScreen() {
               styles.receitaCard,
               { elevation: 0, shadowColor: "transparent" },
             ]}
-            activeOpacity={0.8}
+            activeOpacity={1}
           >
             <Text style={styles.receitaNome}>{item.nome}</Text>
-            <Image source={item.imagem} style={styles.receitaImagem} />
+            <TouchableOpacity activeOpacity={0.75}>
+              <Image source={item.imagem} style={styles.receitaImagem} />
+            </TouchableOpacity>
             <View style={styles.receitaFooter}>
               <Image source={item.autorFoto} style={styles.autorAvatar} />
               <View style={styles.receitaInfo}>
@@ -192,8 +206,8 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontWeight: "600",
     paddingHorizontal: 20,
-    marginTop: 28,
-    marginBottom: 12,
+    marginTop: 32,
+    marginBottom: 18,
   },
   inputWrapper: {
     marginTop: 25,
@@ -212,6 +226,12 @@ const styles = StyleSheet.create({
     paddingRight: 16,
     borderRadius: 100,
     fontSize: 15,
+    borderWidth: 2,
+    borderColor: "#dfdfdf"
+  },
+  inputFocused: {
+    borderColor: "#E96B35",
+    borderWidth: 2,
   },
   cardView: {
     marginTop: 20,
@@ -259,6 +279,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingTop: 14,
     paddingBottom: 10,
+    borderWidth: 1,
+    borderColor: "#dfdfdf",
+    borderTopLeftRadius: 16,
+    borderTopRightRadius: 16,
+    backgroundColor: "#ededed52",
   },
   receitaImagem: {
     width: "100%",
@@ -267,8 +292,14 @@ const styles = StyleSheet.create({
   receitaFooter: {
     flexDirection: "row",
     alignItems: "center",
-    paddingTop: 12,
+    paddingVertical: 10,
+    paddingHorizontal: 8,
     gap: 12,
+    borderWidth: 1,
+    borderColor: "#dfdfdf",
+    borderBottomLeftRadius: 16,
+    borderBottomRightRadius: 16,
+    backgroundColor: "#ededed52",
   },
   autorAvatar: {
     width: 48,
