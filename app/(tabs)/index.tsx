@@ -143,10 +143,12 @@ export default function HomeScreen() {
               styles.receitaCard,
               { elevation: 0, shadowColor: "transparent" },
             ]}
-            activeOpacity={0.8}
+            activeOpacity={1}
           >
             <Text style={styles.receitaNome}>{item.nome}</Text>
+            <TouchableOpacity activeOpacity={0.75}>
             <Image source={item.imagem} style={styles.receitaImagem} />
+            </TouchableOpacity>
             <View style={styles.receitaFooter}>
               <Image source={item.autorFoto} style={styles.autorAvatar} />
               <View style={styles.receitaInfo}>
