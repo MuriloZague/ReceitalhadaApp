@@ -76,7 +76,7 @@ export default function HomeScreen() {
     },
     {
       id: "4",
-      nome: "Doces",
+      nome: "Brigadeiros",
       imagem: require("../../assets/images/doces.jpg"),
       autor: "Tia Flávia",
       autorFoto: require("../../assets/images/profile-icon.svg"),
@@ -292,7 +292,7 @@ const styles = StyleSheet.create({
   receitaFooter: {
     flexDirection: "row",
     alignItems: "center",
-    paddingVertical: 10,
+    paddingVertical: 12,
     paddingHorizontal: 8,
     gap: 12,
     borderWidth: 1,
@@ -302,8 +302,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#ededed52",
   },
   autorAvatar: {
-    width: 48,
-    height: 48,
+    width: 44,
+    height: 44,
     borderRadius: 24,
     borderWidth: 2,
     borderColor: "#E96B35",
