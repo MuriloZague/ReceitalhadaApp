@@ -15,7 +15,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 //import Recipes from "@/components/recipes";
 
 export default function HomeScreen() {
-  const [text, setText] = useState("");
+  //const [text, setText] = useState("");
   const [focus, setFocus] = useState(false);
 
   const categorias = [
@@ -113,8 +113,6 @@ export default function HomeScreen() {
             />
             <TextInput
               style={[styles.input, focus && styles.inputFocused]}
-              onChangeText={setText}
-              value={text}
               placeholder="Procure por uma receita"
               placeholderTextColor="#999999"
               keyboardType="default"

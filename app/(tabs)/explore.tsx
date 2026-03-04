@@ -1,7 +1,6 @@
 import { Image } from "expo-image";
-import { Platform, StyleSheet, Text } from "react-native";
+import { Platform, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-
 
 import { Collapsible } from "@/components/ui/collapsible";
 import { ExternalLink } from "@/components/external-link";
@@ -14,20 +13,34 @@ import { Fonts } from "@/constants/theme";
 export default function TabTwoScreen() {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
-      <Text style={{padding: 33}}>Nada aqui.</Text>
+      <View style={styles.headerApp}>
+        <Image
+          style={{ width: 155, height: 30 }}
+          source={require("../../assets/images/logoReceitalhada.png")}
+        />
+      </View>
+      <View style={styles.loginForm}>
+        <View>
+          <Text>Bem Vindo Ao Receitalhada!</Text>
+        </View>
+        
+      </View>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  headerImage: {
-    color: "#808080",
-    bottom: -90,
-    left: -35,
-    position: "absolute",
-  },
-  titleContainer: {
+  headerApp: {
+    paddingHorizontal: 30,
+    paddingBottom: 21,
+    marginTop: 16,
     flexDirection: "row",
-    gap: 8,
+    justifyContent: "space-between",
+    borderBottomWidth: 8,
+    borderBottomColor: "#E96B35",
+  },
+  loginForm: {
+    borderWidth: 2,
+    borderColor: "#E96B35",
   },
 });
