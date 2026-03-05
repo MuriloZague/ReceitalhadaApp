@@ -1,11 +1,11 @@
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { Tabs } from "expo-router";
 import React from "react";
-import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 
 import { HapticTab } from "@/components/haptic-tab";
-import { IconSymbol } from "@/components/ui/icon-symbol";
 import { Colors } from "@/constants/theme";
-import { useColorScheme } from "@/hooks/use-color-scheme";
+//import { useColorScheme } from "@/hooks/use-color-scheme";
+
 
 export default function TabLayout() {
   //removing multi color scheme from tab ui
