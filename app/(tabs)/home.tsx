@@ -253,7 +253,7 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontWeight: "bold",
     fontSize: 18,
-    width: 85,
+    width: 90,
     textAlign: "center",
   },
   overlay: {
