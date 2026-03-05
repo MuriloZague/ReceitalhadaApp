@@ -23,10 +23,10 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: "Home",
+          title: "Index",
           tabBarIcon: ({ color }) => (
             <MaterialCommunityIcons
-              name="silverware-fork-knife"
+              name="home"
               size={24}
               color={color}
             />
@@ -38,7 +38,22 @@ export default function TabLayout() {
         options={{
           title: "Profile",
           tabBarIcon: ({ color }) => (
-            <MaterialCommunityIcons name="account" size={30} color={color} />
+            <MaterialCommunityIcons name="account" 
+            size={28} 
+            color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="home"
+        options={{
+          title: "Home",
+          tabBarIcon: ({ color }) => (
+            <MaterialCommunityIcons
+              name="silverware-fork-knife"
+              size={22}
+              color={color}
+            />
           ),
         }}
       />
