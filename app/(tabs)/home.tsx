@@ -1,16 +1,16 @@
-import { Image } from "expo-image";
-import {
-  StyleSheet,
-  View,
-  Text,
-  TextInput,
-  FlatList,
-  ImageBackground,
-  TouchableOpacity,
-  ScrollView,
-} from "react-native";
-import React, { use, useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
+import { Image } from "expo-image";
+import React, { useState } from "react";
+import {
+    FlatList,
+    ImageBackground,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 //import Recipes from "@/components/recipes";
 
