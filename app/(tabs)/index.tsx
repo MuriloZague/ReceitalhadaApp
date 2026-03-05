@@ -8,6 +8,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+//usar 'npx expo start --tunnel' para iniciar o projeto e nao dar erro ao conectar no expo go
 export default function HomeScreen() {
 
   return (
