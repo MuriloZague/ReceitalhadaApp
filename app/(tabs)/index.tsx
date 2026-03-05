@@ -58,8 +58,8 @@ const styles = StyleSheet.create({
   btnStart: {
     marginTop: 18,
     backgroundColor: "#E96B35",
-    paddingVertical: 6,
-    paddingHorizontal: 20,
+    paddingVertical: 8,
+    paddingHorizontal: 22,
     borderRadius: 10,
   },
   textBtn: {
@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
     color: 'white'
   },
   textAccount: {
-    marginTop: 8,
+    marginTop: 10,
     textDecorationLine: 'underline',
     fontSize: 14
   }
