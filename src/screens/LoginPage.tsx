@@ -1,21 +1,13 @@
 import { Image } from "expo-image";
 import {
-  Platform,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
-  View,
+  View
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-import { Collapsible } from "@/components/ui/collapsible";
-import { ExternalLink } from "@/components/external-link";
-import ParallaxScrollView from "@/components/parallax-scroll-view";
-import { ThemedText } from "@/components/themed-text";
-import { ThemedView } from "@/components/themed-view";
-import { IconSymbol } from "@/components/ui/icon-symbol";
-import { Fonts } from "@/constants/theme";
 
 export default function TabTwoScreen() {
   return (
@@ -47,7 +39,16 @@ export default function TabTwoScreen() {
             <TextInput style={styles.input} placeholder="********" />
 
             <TouchableOpacity style={styles.submitBtn} activeOpacity={0.7}>
-              <Text style={{fontSize: 17, color: 'white', fontWeight: 500, textAlign: 'center'}}>Cadastrar</Text>
+              <Text
+                style={{
+                  fontSize: 17,
+                  color: "white",
+                  fontWeight: 500,
+                  textAlign: "center",
+                }}
+              >
+                Cadastrar
+              </Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -106,5 +107,5 @@ const styles = StyleSheet.create({
     padding: 10,
     marginTop: 10,
     borderRadius: 4,
-  }
+  },
 });
