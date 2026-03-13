@@ -3,10 +3,16 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { Image } from "expo-image";
 import { useNavigation } from "expo-router";
 import React from "react";
-import { Dimensions, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  Dimensions,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-const {width} = Dimensions.get("window");
+const { width } = Dimensions.get("window");
 
 type NavProp = StackNavigationProp<RootStackParamList>;
 
