@@ -40,8 +40,8 @@ export default function HomeScreen() {
         <TouchableOpacity style={styles.btnStart} activeOpacity={0.5}>
           <Text style={styles.textBtn}>Iniciar</Text>
         </TouchableOpacity>
-        <TouchableOpacity activeOpacity={0.3}>
-          <Text style={styles.textAccount}>Não possui uma conta?</Text>
+        <TouchableOpacity activeOpacity={0.3} onPress={() => navigation.navigate("RegisterScreen")}>
+          <Text style={styles.textAccount} >Não possui uma conta?</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>
