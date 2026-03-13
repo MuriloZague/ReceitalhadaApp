@@ -1,22 +1,30 @@
+import { RootStackParamList } from "@/app/(tabs)";
+import { StackNavigationProp } from "@react-navigation/stack";
 import { Image } from "expo-image";
 import {
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
-  View
+  View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useNavigation } from "expo-router";
 
+type NavProp = StackNavigationProp<RootStackParamList>;
 
 export default function TabTwoScreen() {
+  const navigation = useNavigation<NavProp>();
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
       <View style={styles.headerApp}>
-        <Image
-          style={{ width: 155, height: 30 }}
-          source={require("../../assets/images/logoReceitalhada.png")}
-        />
+        <TouchableOpacity onPress={() => navigation.navigate("HomeScreen")}>
+          <Image
+            style={{ width: 155, height: 30 }}
+            source={require("../../assets/images/logoReceitalhada.png")}
+          />
+        </TouchableOpacity>
       </View>
       <View style={styles.loginForm}>
         <View style={styles.form}>
@@ -34,8 +42,6 @@ export default function TabTwoScreen() {
             <Text style={styles.labelText}>Telefone</Text>
             <TextInput style={styles.input} placeholder="(12) 3456-78901" />
             <Text style={styles.labelText}>Senha</Text>
-            <TextInput style={styles.input} placeholder="********" />
-            <Text style={styles.labelText}>Confirme Sua Senha</Text>
             <TextInput style={styles.input} placeholder="********" />
 
             <TouchableOpacity style={styles.submitBtn} activeOpacity={0.7}>
@@ -68,8 +74,8 @@ const styles = StyleSheet.create({
     borderBottomColor: "#E96B35",
   },
   loginForm: {
-    marginHorizontal: 20,
-    marginTop: 50,
+    marginHorizontal: 18,
+    marginTop: 55,
     borderWidth: 2,
     borderColor: "#E96B35",
     borderRadius: 16,

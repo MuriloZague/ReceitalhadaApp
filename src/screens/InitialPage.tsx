@@ -2,14 +2,14 @@ import { Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import React, { useState } from "react";
 import {
-    FlatList,
-    ImageBackground,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  FlatList,
+  ImageBackground,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 //import Recipes from "@/components/recipes";
@@ -225,7 +225,7 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     fontSize: 15,
     borderWidth: 2,
-    borderColor: "#dfdfdf"
+    borderColor: "#dfdfdf",
   },
   inputFocused: {
     borderColor: "#E96B35",

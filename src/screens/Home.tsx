@@ -3,10 +3,16 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { Image } from "expo-image";
 import { useNavigation } from "expo-router";
 import React from "react";
-import { Dimensions, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  Dimensions,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-const {width} = Dimensions.get("window");
+const { width } = Dimensions.get("window");
 
 type NavProp = StackNavigationProp<RootStackParamList>;
 
@@ -34,8 +40,8 @@ export default function HomeScreen() {
         <TouchableOpacity style={styles.btnStart} activeOpacity={0.5}>
           <Text style={styles.textBtn}>Iniciar</Text>
         </TouchableOpacity>
-        <TouchableOpacity activeOpacity={0.3}>
-          <Text style={styles.textAccount}>Não possui uma conta?</Text>
+        <TouchableOpacity activeOpacity={0.3} onPress={() => navigation.navigate("RegisterScreen")}>
+          <Text style={styles.textAccount} >Não possui uma conta?</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>
