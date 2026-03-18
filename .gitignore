@@ -43,4 +43,4 @@ app-example
 /android
 
 #firebase config
-connectionFirebase.tsx
+/src/services/connectionFirebase.tsx
