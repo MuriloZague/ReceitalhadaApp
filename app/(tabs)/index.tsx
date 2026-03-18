@@ -1,5 +1,5 @@
 import HomeScreen from "@/src/screens/Home";
-import RegisterPage from "@/src/screens/RegisterPage"
+import RegisterPage from "@/src/screens/RegisterPage";
 import { createStackNavigator } from "@react-navigation/stack";
 
 export type RootStackParamList = {
