@@ -30,7 +30,7 @@ export default function TabTwoScreen() {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
       <View style={styles.headerApp}>
-        <TouchableOpacity onPress={() => navigation.navigate("HomeScreen")}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
           <Image
             style={{ width: 155, height: 30 }}
             source={require("../../assets/images/logoReceitalhada.png")}
@@ -80,7 +80,7 @@ export default function TabTwoScreen() {
               onChangeText={(text: string) => setPassword(text)}
             />
 
-            <TouchableOpacity style={styles.submitBtn} activeOpacity={0.7}>
+            <TouchableOpacity style={styles.submitBtn} activeOpacity={0.7} >
               <Text
                 style={{
                   fontSize: 17,
