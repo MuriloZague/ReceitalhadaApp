@@ -46,14 +46,39 @@ export default function TabTwoScreen() {
             </Text>
           </View>
           <View style={styles.formContent}>
+
             <Text style={styles.labelText}>Nome</Text>
-            <TextInput style={styles.input} placeholder="Seu Nome" />
+            <TextInput
+              style={styles.input}
+              placeholder="Seu Nome"
+              value={name}
+              onChangeText={(text: string) => setName(text)}
+            />
+
             <Text style={styles.labelText}>E-mail</Text>
-            <TextInput style={styles.input} placeholder="email@email.com" />
+            <TextInput
+              style={styles.input}
+              placeholder="email@email.com"
+              value={email}
+              onChangeText={(text: string) => setEmail(text)}
+            />
+
             <Text style={styles.labelText}>Telefone</Text>
-            <TextInput style={styles.input} placeholder="(12) 3456-78901" />
+            <TextInput
+              style={styles.input}
+              placeholder="(12) 3456-78901"
+              value={cellphone}
+              onChangeText={(text: string) => setCellphone(text)}
+            />
+
             <Text style={styles.labelText}>Senha</Text>
-            <TextInput style={styles.input} placeholder="********" />
+            <TextInput
+              style={styles.input}
+              placeholder="********"
+              secureTextEntry
+              value={password}
+              onChangeText={(text: string) => setPassword(text)}
+            />
 
             <TouchableOpacity style={styles.submitBtn} activeOpacity={0.7}>
               <Text
