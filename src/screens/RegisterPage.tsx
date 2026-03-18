@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   View,
   Platform,
-  Alert
+  Alert,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "expo-router";
@@ -21,6 +21,11 @@ type NavProp = StackNavigationProp<RootStackParamList>;
 
 export default function TabTwoScreen() {
   const navigation = useNavigation<NavProp>();
+
+  const [name, setName] = useState<string>("");
+  const [cellphone, setCellphone] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
