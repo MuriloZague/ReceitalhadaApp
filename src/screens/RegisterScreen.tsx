@@ -7,19 +7,30 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  Platform,
+  Alert,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "expo-router";
+import React, { useState } from "react";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { ref, set } from "firebase/database";
+import { auth, database } from "../services/connectionFirebase";
 
 type NavProp = StackNavigationProp<RootStackParamList>;
 
 export default function TabTwoScreen() {
   const navigation = useNavigation<NavProp>();
 
+  const [name, setName] = useState<string>("");
+  const [cellphone, setCellphone] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
       <View style={styles.headerApp}>
-        <TouchableOpacity onPress={() => navigation.navigate("HomeScreen")}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
           <Image
             style={{ width: 155, height: 30 }}
             source={require("../../assets/images/logoReceitalhada.png")}
@@ -35,16 +46,41 @@ export default function TabTwoScreen() {
             </Text>
           </View>
           <View style={styles.formContent}>
-            <Text style={styles.labelText}>Nome</Text>
-            <TextInput style={styles.input} placeholder="Seu Nome" />
-            <Text style={styles.labelText}>E-mail</Text>
-            <TextInput style={styles.input} placeholder="email@email.com" />
-            <Text style={styles.labelText}>Telefone</Text>
-            <TextInput style={styles.input} placeholder="(12) 3456-78901" />
-            <Text style={styles.labelText}>Senha</Text>
-            <TextInput style={styles.input} placeholder="********" />
 
-            <TouchableOpacity style={styles.submitBtn} activeOpacity={0.7}>
+            <Text style={styles.labelText}>Nome</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Seu Nome"
+              value={name}
+              onChangeText={(text: string) => setName(text)}
+            />
+
+            <Text style={styles.labelText}>E-mail</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="email@email.com"
+              value={email}
+              onChangeText={(text: string) => setEmail(text)}
+            />
+
+            <Text style={styles.labelText}>Telefone</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="(12) 3456-78901"
+              value={cellphone}
+              onChangeText={(text: string) => setCellphone(text)}
+            />
+
+            <Text style={styles.labelText}>Senha</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="********"
+              secureTextEntry
+              value={password}
+              onChangeText={(text: string) => setPassword(text)}
+            />
+
+            <TouchableOpacity style={styles.submitBtn} activeOpacity={0.7} >
               <Text
                 style={{
                   fontSize: 17,
