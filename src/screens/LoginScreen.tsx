@@ -39,12 +39,11 @@ export default function LoginScreen() {
         <View style={styles.form}>
           <View style={styles.boxTitleForm}>
             <Text style={styles.titleForm}>
-              Bem Vindo Ao{" "}
-              <Text style={{ color: "#E96B35" }}>Receitalhada!</Text>
+              <Text style={{ color: "#E96B35" }}>Bem Vindo </Text>
+              De Volta!
             </Text>
           </View>
           <View style={styles.formContent}>
-
             <Text style={styles.labelText}>E-mail</Text>
             <TextInput
               style={styles.input}
@@ -62,7 +61,15 @@ export default function LoginScreen() {
               onChangeText={(text: string) => setPassword(text)}
             />
 
-            <TouchableOpacity style={styles.submitBtn} activeOpacity={0.7} >
+            <TouchableOpacity>
+              <Text
+                style={{ color: "#E96B35", textDecorationLine: "underline" }}
+              >
+                Esqueci a senha
+              </Text>
+            </TouchableOpacity>
+            
+            <TouchableOpacity style={styles.submitBtn} activeOpacity={0.7}>
               <Text
                 style={{
                   fontSize: 17,
@@ -74,6 +81,20 @@ export default function LoginScreen() {
                 Cadastrar
               </Text>
             </TouchableOpacity>
+
+            <Text style={{ textAlign: "center", marginTop: 20 }}>
+              Ainda Não Possui Uma Conta?{" "}
+              <TouchableOpacity
+                style={{ marginTop: 4 }}
+                onPress={() => navigation.navigate("RegisterScreen")}
+              >
+                <Text
+                  style={{ color: "#E96B35", textDecorationLine: "underline" }}
+                >
+                  Entre!
+                </Text>
+              </TouchableOpacity>
+            </Text>
           </View>
         </View>
       </View>
@@ -120,7 +141,8 @@ const styles = StyleSheet.create({
     borderBottomColor: "#E96B35",
   },
   formContent: {
-    paddingVertical: 20,
+    paddingTop: 20,
+    paddingBottom: 8,
   },
   labelText: {
     fontSize: 16.5,
