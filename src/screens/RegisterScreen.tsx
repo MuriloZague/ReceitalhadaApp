@@ -11,6 +11,8 @@ import {
   View,
   Platform,
   Alert,
+  KeyboardAvoidingView,
+  ScrollView,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { createUserWithEmailAndPassword } from "firebase/auth";
@@ -131,7 +133,16 @@ export default function RegisterScreen() {
         </TouchableOpacity>
       </View>
 
-      <View style={styles.loginForm}>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+      >
+        <ScrollView
+          contentContainerStyle={{ paddingBottom: 32 }}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
+          <View style={styles.loginForm}>
         <View style={styles.form}>
           <View style={styles.boxTitleForm}>
             <Text style={styles.titleForm}>
@@ -262,7 +273,9 @@ export default function RegisterScreen() {
             </Text>
           </View>
         </View>
-      </View>
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
