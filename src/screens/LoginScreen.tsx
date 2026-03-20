@@ -1,8 +1,6 @@
 import { RootStackParamList } from "@/app/(tabs)";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { Image } from "expo-image";
-import { useNavigation } from "expo-router";
-import React, { useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -13,66 +11,19 @@ import {
   Alert,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useNavigation } from "expo-router";
+import React, { useState } from "react";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { ref, set } from "firebase/database";
 import { auth, database } from "../services/connectionFirebase";
 
 type NavProp = StackNavigationProp<RootStackParamList>;
 
-export default function RegisterScreen() {
+export default function LoginScreen() {
   const navigation = useNavigation<NavProp>();
 
-  const [name, setName] = useState<string>("");
-  const [cellphone, setCellphone] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const [mensagem, setMensagem] = useState<string>("");
-
-  //registrar usuario no firebase db
-  async function registerUser(): Promise<void> {
-    try {
-      //primeiro irá no Authentication do Firebase e gravar e-mail e password
-      const userCredential = await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password,
-      );
-
-      //verifica que o usuário foi criado no Authentication
-      const user = userCredential.user;
-      if (user) {
-        await set(ref(database, "users" + user.uid), {
-          uid: user.uid,
-          name,
-          cellphone,
-          email,
-          createdAt: new Date().toISOString(),
-        });
-      }
-
-      // Mensagem para web + mobile
-      if (Platform.OS === "web") {
-        alert("Usuário cadastrado com sucesso!");
-      } else {
-        Alert.alert("Sucesso", "Usuário cadastrado com sucesso!");
-      }
-
-      setMensagem("Usuário cadastrado com sucesso!");
-
-      // Limpar campos (opcional)
-      setName("");
-      setCellphone("");
-      setEmail("");
-      setPassword("");
-    } catch (error: any) {
-      if (Platform.OS === "web") {
-        alert(error.message);
-      } else {
-        Alert.alert("Erro", error.message);
-      }
-      setMensagem("Erro ao cadastrar usuário");
-    }
-  }
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
@@ -93,13 +44,6 @@ export default function RegisterScreen() {
             </Text>
           </View>
           <View style={styles.formContent}>
-            <Text style={styles.labelText}>Nome</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Seu Nome"
-              value={name}
-              onChangeText={(text: string) => setName(text)}
-            />
 
             <Text style={styles.labelText}>E-mail</Text>
             <TextInput
@@ -107,14 +51,6 @@ export default function RegisterScreen() {
               placeholder="email@email.com"
               value={email}
               onChangeText={(text: string) => setEmail(text)}
-            />
-
-            <Text style={styles.labelText}>Telefone</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="(12) 3456-78901"
-              value={cellphone}
-              onChangeText={(text: string) => setCellphone(text)}
             />
 
             <Text style={styles.labelText}>Senha</Text>
@@ -126,17 +62,7 @@ export default function RegisterScreen() {
               onChangeText={(text: string) => setPassword(text)}
             />
 
-            <View>
-              {mensagem ? (
-                <Text style={{ color: "red" }}>{mensagem}</Text>
-              ) : null}
-            </View>
-
-            <TouchableOpacity
-              style={styles.submitBtn}
-              activeOpacity={0.7}
-              onPress={registerUser}
-            >
+            <TouchableOpacity style={styles.submitBtn} activeOpacity={0.7} >
               <Text
                 style={{
                   fontSize: 17,
@@ -148,17 +74,6 @@ export default function RegisterScreen() {
                 Cadastrar
               </Text>
             </TouchableOpacity>
-
-            <Text style={{ textAlign: "center", marginTop: 20 }}>
-              Já Possui Uma Conta?{" "}
-              <TouchableOpacity style={{marginTop: 4}} onPress={() => navigation.navigate('LoginScreen')}>
-                <Text
-                  style={{ color: "#E96B35", textDecorationLine: "underline" }}
-                >
-                  Entre!
-                </Text>
-              </TouchableOpacity>
-            </Text>
           </View>
         </View>
       </View>
@@ -205,8 +120,7 @@ const styles = StyleSheet.create({
     borderBottomColor: "#E96B35",
   },
   formContent: {
-    paddingTop: 20,
-    paddingBottom: 8,
+    paddingVertical: 20,
   },
   labelText: {
     fontSize: 16.5,
