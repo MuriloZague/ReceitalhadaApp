@@ -37,7 +37,7 @@ export default function HomeScreen() {
           style={{ width: 240, height: 40 }}
           source={require("../../assets/images/logoReceitalhada.png")}
         />
-        <TouchableOpacity style={styles.btnStart} activeOpacity={0.5}>
+        <TouchableOpacity style={styles.btnStart} activeOpacity={0.5} onPress={() => navigation.navigate("LoginScreen")}>
           <Text style={styles.textBtn}>Iniciar</Text>
         </TouchableOpacity>
         <TouchableOpacity activeOpacity={0.3} onPress={() => navigation.navigate("RegisterScreen")}>
