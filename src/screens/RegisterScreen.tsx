@@ -46,19 +46,16 @@ export default function RegisterScreen() {
   }
 
   async function registerUser(): Promise<void> {
-    // Validação: campos obrigatórios
     if (!name || !email || !cellphone || !password || !confirmPassword) {
       setMensagem("Preencha todos os campos.");
       return;
     }
 
-    // Validação: tamanho mínimo da senha
     if (password.length < 8) {
       setMensagem("A senha deve ter no mínimo 8 caracteres.");
       return;
     }
 
-    // Validação: senhas coincidem
     if (password !== confirmPassword) {
       setMensagem("As senhas não coincidem.");
       return;
@@ -152,7 +149,6 @@ export default function RegisterScreen() {
           </View>
 
           <View style={styles.formContent}>
-            {/* Nome */}
             <Text style={styles.labelText}>Nome</Text>
             <TextInput
               style={styles.input}
@@ -161,7 +157,6 @@ export default function RegisterScreen() {
               onChangeText={(text: string) => setName(text)}
             />
 
-            {/* E-mail */}
             <Text style={styles.labelText}>E-mail</Text>
             <TextInput
               style={styles.input}
@@ -172,7 +167,6 @@ export default function RegisterScreen() {
               autoCapitalize="none"
             />
 
-            {/* Telefone com máscara */}
             <Text style={styles.labelText}>Telefone</Text>
             <TextInput
               style={styles.input}
@@ -183,7 +177,6 @@ export default function RegisterScreen() {
               maxLength={16}
             />
 
-            {/* Senha */}
             <Text style={styles.labelText}>Senha</Text>
             <TextInput
               style={styles.input}
@@ -192,14 +185,11 @@ export default function RegisterScreen() {
               value={password}
               onChangeText={(text: string) => setPassword(text)}
             />
-            {/* Indicador de força da senha */}
             {passwordStrength && (
               <Text style={[styles.strengthText, { color: passwordStrength.color }]}>
                 {passwordStrength.label}
               </Text>
             )}
-
-            {/* Confirmar Senha */}
             <Text style={[styles.labelText, { marginTop: 4 }]}>
               Confirmar Senha
             </Text>
@@ -217,7 +207,6 @@ export default function RegisterScreen() {
               value={confirmPassword}
               onChangeText={(text: string) => setConfirmPassword(text)}
             />
-            {/* Feedback inline de confirmação */}
             {confirmPassword.length > 0 && (
               <Text
                 style={{
@@ -233,7 +222,6 @@ export default function RegisterScreen() {
               </Text>
             )}
 
-            {/* Mensagem de status */}
             {mensagem ? (
               <Text style={{ color: mensagemColor, marginBottom: 4 }}>
                 {mensagem}
