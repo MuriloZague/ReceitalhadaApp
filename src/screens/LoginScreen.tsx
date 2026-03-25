@@ -16,7 +16,6 @@ import React, { useState } from "react";
 import { auth } from "../services/connectionFirebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
 
-
 type NavProp = StackNavigationProp<RootStackParamList>;
 
 export default function LoginScreen() {
@@ -24,6 +23,7 @@ export default function LoginScreen() {
 
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [mensagem, setMensagem] = useState<string>("");
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>

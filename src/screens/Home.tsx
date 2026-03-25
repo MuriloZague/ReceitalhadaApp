@@ -34,7 +34,7 @@ export default function HomeScreen() {
       </View>
       <View style={styles.mainContainer}>
         <Image
-          style={{ width: 240, height: 40, marginBottom: 26 }}
+          style={{ width: 240, height: 40, marginBottom: 20 }}
           source={require("../../assets/images/logoReceitalhada.png")}
         />
         <TouchableOpacity style={styles.btnStart} activeOpacity={0.5} onPress={() => navigation.navigate("LoginScreen")}>
