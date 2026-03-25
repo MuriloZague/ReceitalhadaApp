@@ -46,6 +46,7 @@ export default function LoginScreen() {
           <View style={styles.formContent}>
             <Text style={styles.labelText}>E-mail</Text>
             <TextInput
+              autoCapitalize="none"
               style={styles.input}
               placeholder="email@email.com"
               value={email}

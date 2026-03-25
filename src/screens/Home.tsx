@@ -74,7 +74,7 @@ const styles = StyleSheet.create({
   },
   textBtn: {
     textAlign: "center",
-    fontSize: 22,
+    fontSize: 20,
     color: "white",
   },
   textAccount: {
