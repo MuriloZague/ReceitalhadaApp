@@ -68,7 +68,7 @@ export default function LoginScreen() {
                 Esqueci a senha
               </Text>
             </TouchableOpacity>
-            
+
             <TouchableOpacity style={styles.submitBtn} activeOpacity={0.7}>
               <Text
                 style={{
