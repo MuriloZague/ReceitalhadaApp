@@ -1,6 +1,10 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { RootStackParamList } from "@/app/(tabs)";
 import React, { useState } from "react";
+import { useNavigation } from "expo-router";
+
 import {
   FlatList,
   ImageBackground,
@@ -14,7 +18,11 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 //import Recipes from "@/components/recipes";
 
+type NavProp = StackNavigationProp<RootStackParamList>;
+
 export default function Home() {
+  const navigation = useNavigation<NavProp>();
+
   //const [text, setText] = useState("");
   const [focus, setFocus] = useState(false);
 
@@ -93,10 +101,12 @@ export default function Home() {
             style={{ width: 155, height: 30 }}
             source={require("../../assets/images/logoReceitalhada.png")}
           />
-          <Image
-            style={{ width: 35, height: 35 }}
-            source={require("../../assets/images/profile-icon.svg")}
-          />
+          <TouchableOpacity onPress={() => navigation.navigate('HomeScreen')}>
+            <Image
+              style={{ width: 35, height: 35 }}
+              source={require("../../assets/images/profile-icon.svg")}
+            />
+          </TouchableOpacity>
         </View>
 
         <View style={styles.titleContainer}>

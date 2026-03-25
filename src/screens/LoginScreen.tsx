@@ -13,9 +13,8 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "expo-router";
 import React, { useState } from "react";
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { ref, set } from "firebase/database";
-import { auth, database } from "../services/connectionFirebase";
+import { auth } from "../services/connectionFirebase";
+import { signInWithEmailAndPassword } from "firebase/auth";
 
 type NavProp = StackNavigationProp<RootStackParamList>;
 
@@ -24,6 +23,53 @@ export default function LoginScreen() {
 
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [mensagem, setMensagem] = useState<string>("");
+
+  async function login(): Promise<void> {
+    if (!validateFields()) return;
+
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+
+      showAlert("Login realizado com sucesso!");
+      setMensagem("Bem-vindo!");
+
+      // limpar campos
+      setEmail("");
+      setPassword("");
+
+      // opcional: navegar para área do usuário
+      navigation.navigate('InitialScreen')
+      // navigation.navigate("AreaUser");
+    } catch (error: any) {
+      showAlert("E-mail ou senha inválidos");
+      setMensagem("Erro ao realizar login");
+    }
+  }
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  function validateFields(): boolean {
+    if (!email || !password) {
+      showAlert("Preencha todos os campos");
+      return false;
+    }
+
+    if (!emailRegex.test(email)) {
+      showAlert("Digite um e-mail válido");
+      return false;
+    }
+
+    return true;
+  }
+
+  function showAlert(msg: string) {
+    if (Platform.OS === "web") {
+      alert(msg);
+    } else {
+      Alert.alert("Atenção", msg);
+    }
+  }
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
@@ -46,6 +92,7 @@ export default function LoginScreen() {
           <View style={styles.formContent}>
             <Text style={styles.labelText}>E-mail</Text>
             <TextInput
+              autoCapitalize="none"
               style={styles.input}
               placeholder="email@email.com"
               value={email}
@@ -68,8 +115,12 @@ export default function LoginScreen() {
                 Esqueci a senha
               </Text>
             </TouchableOpacity>
-            
-            <TouchableOpacity style={styles.submitBtn} activeOpacity={0.7}>
+
+            <TouchableOpacity
+              style={styles.submitBtn}
+              activeOpacity={0.7}
+              onPress={login}
+            >
               <Text
                 style={{
                   fontSize: 17,
@@ -78,7 +129,7 @@ export default function LoginScreen() {
                   textAlign: "center",
                 }}
               >
-                Cadastrar
+                Entrar
               </Text>
             </TouchableOpacity>
 
