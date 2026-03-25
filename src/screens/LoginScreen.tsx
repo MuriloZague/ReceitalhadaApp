@@ -13,9 +13,9 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "expo-router";
 import React, { useState } from "react";
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { ref, set } from "firebase/database";
-import { auth, database } from "../services/connectionFirebase";
+import { auth } from "../services/connectionFirebase";
+import { signInWithEmailAndPassword } from "firebase/auth";
+
 
 type NavProp = StackNavigationProp<RootStackParamList>;
 
