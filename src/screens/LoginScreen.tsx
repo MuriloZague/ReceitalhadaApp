@@ -39,6 +39,7 @@ export default function LoginScreen() {
       setPassword("");
 
       // opcional: navegar para área do usuário
+      navigation.navigate('InitialScreen')
       // navigation.navigate("AreaUser");
     } catch (error: any) {
       showAlert("E-mail ou senha inválidos");
@@ -128,7 +129,7 @@ export default function LoginScreen() {
                   textAlign: "center",
                 }}
               >
-                Cadastrar
+                Entrar
               </Text>
             </TouchableOpacity>
 
