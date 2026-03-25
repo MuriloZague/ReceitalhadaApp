@@ -34,14 +34,14 @@ export default function HomeScreen() {
       </View>
       <View style={styles.mainContainer}>
         <Image
-          style={{ width: 240, height: 40 }}
+          style={{ width: 240, height: 40, marginBottom: 26 }}
           source={require("../../assets/images/logoReceitalhada.png")}
         />
         <TouchableOpacity style={styles.btnStart} activeOpacity={0.5} onPress={() => navigation.navigate("LoginScreen")}>
-          <Text style={styles.textBtn}>Iniciar</Text>
+          <Text style={styles.textBtn}>Entrar</Text>
         </TouchableOpacity>
-        <TouchableOpacity activeOpacity={0.3} onPress={() => navigation.navigate("RegisterScreen")}>
-          <Text style={styles.textAccount} >Não possui uma conta?</Text>
+        <TouchableOpacity style={styles.btnStart} activeOpacity={0.5} onPress={() => navigation.navigate("RegisterScreen")}>
+          <Text style={styles.textBtn} >Criar uma Conta</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>
@@ -66,11 +66,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   btnStart: {
-    marginTop: 18,
+    marginTop: 12,
     backgroundColor: "#E96B35",
     paddingVertical: 8,
-    paddingHorizontal: 22,
     borderRadius: 10,
+    width: '60%',
   },
   textBtn: {
     textAlign: "center",
