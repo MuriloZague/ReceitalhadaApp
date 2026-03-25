@@ -25,6 +25,51 @@ export default function LoginScreen() {
   const [password, setPassword] = useState<string>("");
   const [mensagem, setMensagem] = useState<string>("");
 
+  async function login(): Promise<void> {
+    if (!validateFields()) return;
+
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+
+      showAlert("Login realizado com sucesso!");
+      setMensagem("Bem-vindo!");
+
+      // limpar campos
+      setEmail("");
+      setPassword("");
+
+      // opcional: navegar para área do usuário
+      // navigation.navigate("AreaUser");
+    } catch (error: any) {
+      showAlert("E-mail ou senha inválidos");
+      setMensagem("Erro ao realizar login");
+    }
+  }
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  function validateFields(): boolean {
+    if (!email || !password) {
+      showAlert("Preencha todos os campos");
+      return false;
+    }
+
+    if (!emailRegex.test(email)) {
+      showAlert("Digite um e-mail válido");
+      return false;
+    }
+
+    return true;
+  }
+
+  function showAlert(msg: string) {
+    if (Platform.OS === "web") {
+      alert(msg);
+    } else {
+      Alert.alert("Atenção", msg);
+    }
+  }
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
       <View style={styles.headerApp}>
@@ -70,7 +115,11 @@ export default function LoginScreen() {
               </Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.submitBtn} activeOpacity={0.7}>
+            <TouchableOpacity
+              style={styles.submitBtn}
+              activeOpacity={0.7}
+              onPress={login}
+            >
               <Text
                 style={{
                   fontSize: 17,
