@@ -1,9 +1,9 @@
-import { Ionicons } from "@expo/vector-icons";
-import { Image } from "expo-image";
-import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "@/app/(tabs)";
-import React, { useState } from "react";
+import { Ionicons } from "@expo/vector-icons";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { Image } from "expo-image";
 import { useNavigation } from "expo-router";
+import React, { useState } from "react";
 
 import {
   FlatList,
@@ -101,7 +101,9 @@ export default function Home() {
             style={{ width: 155, height: 30 }}
             source={require("../../assets/images/logoReceitalhada.png")}
           />
-          <TouchableOpacity onPress={() => navigation.navigate('HomeScreen')}>
+          <TouchableOpacity
+            onPress={() => navigation.navigate("DashBoardScreen")}
+          >
             <Image
               style={{ width: 35, height: 35 }}
               source={require("../../assets/images/profile-icon.svg")}
@@ -208,6 +210,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontWeight: "500",
     paddingHorizontal: 20,
+    fontFamily: "Inter-Regular",
   },
   minorTitle: {
     fontSize: 24,
@@ -216,6 +219,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     marginTop: 32,
     marginBottom: 18,
+    fontFamily: "Inter-Regular",
   },
   inputWrapper: {
     marginTop: 25,
@@ -236,6 +240,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
     borderWidth: 2,
     borderColor: "#dfdfdf",
+    fontFamily: "Inter-Regular",
   },
   inputFocused: {
     borderColor: "#E96B35",
@@ -265,6 +270,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     width: 90,
     textAlign: "center",
+    fontFamily: "Inter-Regular",
   },
   overlay: {
     ...StyleSheet.absoluteFillObject,
@@ -292,6 +298,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 16,
     borderTopRightRadius: 16,
     backgroundColor: "#ededed52",
+    fontFamily: "Inter-Regular",
   },
   receitaImagem: {
     width: "100%",
@@ -324,10 +331,12 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: "700",
     color: "#222",
+    fontFamily: "Inter-Regular",
   },
   receitaData: {
     fontSize: 13,
     color: "#888",
+    fontFamily: "Inter-Regular",
   },
   favoritosRow: {
     flexDirection: "row",
@@ -338,5 +347,6 @@ const styles = StyleSheet.create({
   favoritosText: {
     fontSize: 13,
     color: "#555",
+    fontFamily: "Inter-Regular",
   },
 });
