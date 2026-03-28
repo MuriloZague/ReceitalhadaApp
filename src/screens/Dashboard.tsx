@@ -1,18 +1,20 @@
 import { RootStackParamList } from "@/app/(tabs)";
 import Waves from "@/components/waves";
+import { auth, database } from "../services/connectionFirebase";
 import { Ionicons } from "@expo/vector-icons";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { Image } from "expo-image";
 import { useNavigation } from "expo-router";
-import React, { useState } from "react";
+import { get, ref } from "firebase/database";
+import React, { useEffect, useState } from "react";
 import {
-    Dimensions,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  Dimensions,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -23,10 +25,33 @@ type NavProp = StackNavigationProp<RootStackParamList>;
 export default function DashboardScreen() {
   const navigation = useNavigation<NavProp>();
   const [userData, setUserData] = useState({
-    nome: "Nome Completo",
-    email: "email@email.com",
-    telefone: "(12) 3456-78910",
+    nome: "Carregando...",
+    telefone: "Carregando...",
   });
+
+  useEffect(() => {
+    const loadUserData = async () => {
+      try {
+        const user = auth.currentUser;
+        if (user) {
+          const userRef = ref(database, `users/${user.uid}`);
+          const snapshot = await get(userRef);
+
+          if (snapshot.exists()) {
+            const data = snapshot.val();
+            setUserData({
+              nome: data.name || "N/A",
+              telefone: data.cellphone || "N/A",
+            });
+          }
+        }
+      } catch (error) {
+        console.error("Erro ao carregar dados do usuário:", error);
+      }
+    };
+
+    loadUserData();
+  }, []);
 
   const handleLogout = () => {
     navigation.navigate("HomeScreen");
