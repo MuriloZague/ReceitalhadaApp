@@ -1,6 +1,5 @@
 import { RootStackParamList } from "@/app/(tabs)";
 import Waves from "@/components/waves";
-import { auth, database } from "../services/connectionFirebase";
 import { Ionicons } from "@expo/vector-icons";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { Image } from "expo-image";
@@ -17,6 +16,7 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { auth, database } from "../services/connectionFirebase";
 
 const { width } = Dimensions.get("window");
 
@@ -125,7 +125,7 @@ export default function DashboardScreen() {
 
 const styles = StyleSheet.create({
   header: {
-    paddingHorizontal: 24,
+    paddingHorizontal: 30,
     paddingVertical: 16,
     flexDirection: "row",
     justifyContent: "space-between",
