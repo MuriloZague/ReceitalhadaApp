@@ -1,20 +1,20 @@
 import { RootStackParamList } from "@/app/(tabs)";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { Image } from "expo-image";
+import { useNavigation } from "expo-router";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import React, { useState } from "react";
 import {
+  Alert,
+  Platform,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
   View,
-  Platform,
-  Alert,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useNavigation } from "expo-router";
-import React, { useState } from "react";
 import { auth } from "../services/connectionFirebase";
-import { signInWithEmailAndPassword } from "firebase/auth";
 
 type NavProp = StackNavigationProp<RootStackParamList>;
 
@@ -39,7 +39,7 @@ export default function LoginScreen() {
       setPassword("");
 
       // opcional: navegar para área do usuário
-      navigation.navigate('InitialScreen')
+      navigation.navigate("InitialScreen");
       // navigation.navigate("AreaUser");
     } catch (error: any) {
       showAlert("E-mail ou senha inválidos");
@@ -110,7 +110,11 @@ export default function LoginScreen() {
 
             <TouchableOpacity>
               <Text
-                style={{ color: "#E96B35", textDecorationLine: "underline" }}
+                style={{
+                  color: "#E96B35",
+                  textDecorationLine: "underline",
+                  fontFamily: "Inter-Regular",
+                }}
               >
                 Esqueci a senha
               </Text>
@@ -127,13 +131,20 @@ export default function LoginScreen() {
                   color: "white",
                   fontWeight: 500,
                   textAlign: "center",
+                  fontFamily: "Inter-Regular",
                 }}
               >
                 Entrar
               </Text>
             </TouchableOpacity>
 
-            <Text style={{ textAlign: "center", marginTop: 20 }}>
+            <Text
+              style={{
+                textAlign: "center",
+                marginTop: 20,
+                fontFamily: "Inter-Regular",
+              }}
+            >
               Ainda Não Possui Uma Conta?{" "}
               <TouchableOpacity
                 style={{ marginTop: 4 }}
@@ -176,6 +187,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     paddingLeft: 10,
     paddingVertical: 8.5,
+    fontFamily: "Inter-Regular",
   },
   form: {
     paddingHorizontal: 15,
@@ -186,6 +198,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontWeight: 600,
     marginBottom: 5,
+    fontFamily: "Inter-Regular",
   },
   boxTitleForm: {
     borderBottomWidth: 2,
@@ -198,6 +211,7 @@ const styles = StyleSheet.create({
   labelText: {
     fontSize: 16.5,
     fontWeight: 500,
+    fontFamily: "Inter-Regular",
   },
   submitBtn: {
     backgroundColor: "#E96B35",
