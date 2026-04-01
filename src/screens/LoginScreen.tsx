@@ -24,10 +24,12 @@ export default function LoginScreen() {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [mensagem, setMensagem] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
 
   async function login(): Promise<void> {
     if (!validateFields()) return;
 
+    setLoading(true);
     try {
       await signInWithEmailAndPassword(auth, email, password);
 
@@ -42,6 +44,7 @@ export default function LoginScreen() {
       navigation.navigate("InitialScreen");
       // navigation.navigate("AreaUser");
     } catch (error: any) {
+      setLoading(false);
       showAlert("E-mail ou senha inválidos");
       setMensagem("Erro ao realizar login");
     }
@@ -52,11 +55,13 @@ export default function LoginScreen() {
   function validateFields(): boolean {
     if (!email || !password) {
       showAlert("Preencha todos os campos");
+      setMensagem("Preencha todos os campos");
       return false;
     }
 
     if (!emailRegex.test(email)) {
       showAlert("Digite um e-mail válido");
+      setMensagem("Digite um e-mail válido");
       return false;
     }
 
@@ -70,6 +75,9 @@ export default function LoginScreen() {
       Alert.alert("Atenção", msg);
     }
   }
+
+  const mensagemColor = mensagem.includes("sucesso") ? "green" : "red";
+
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
@@ -108,7 +116,7 @@ export default function LoginScreen() {
               onChangeText={(text: string) => setPassword(text)}
             />
 
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => showAlert("em desenvolvimento...")}>
               <Text
                 style={{
                   color: "#E96B35",
@@ -120,8 +128,13 @@ export default function LoginScreen() {
               </Text>
             </TouchableOpacity>
 
+
             <TouchableOpacity
-              style={styles.submitBtn}
+              style={[
+                styles.submitBtn,
+                loading && styles.submitBtnDisabled,
+              ]}
+              disabled={loading}
               activeOpacity={0.7}
               onPress={login}
             >
@@ -137,6 +150,13 @@ export default function LoginScreen() {
                 Entrar
               </Text>
             </TouchableOpacity>
+
+            
+            {mensagem ? (
+              <Text style={{ color: mensagemColor, marginTop: 16, textAlign: "center", fontFamily: "Inter-Regular" }}>
+                {mensagem}
+              </Text>
+            ) : null}
 
             <Text
               style={{
@@ -218,5 +238,8 @@ const styles = StyleSheet.create({
     padding: 10,
     marginTop: 10,
     borderRadius: 4,
+  },
+  submitBtnDisabled: {
+    backgroundColor: "#f0a882",
   },
 });
