@@ -113,7 +113,7 @@ export default function Home() {
 
         <View style={styles.titleContainer}>
           <Text style={styles.title}>
-            Encontre A <Text style={{ color: "#E96B35" }}>Melhor Receita</Text>{" "}
+            Encontre A <Text style={{ color: "#E96B35", fontWeight: 700 }}>Melhor Receita</Text>{" "}
             Para A Sua Fome
           </Text>
           <View style={styles.inputWrapper}>
@@ -202,15 +202,16 @@ const styles = StyleSheet.create({
     borderBottomColor: "#E96B35",
   },
   titleContainer: {
-    paddingHorizontal: 30,
-    paddingTop: 25,
+    paddingHorizontal: 24,
+    padding: 20,
   },
   title: {
     fontSize: 28,
     textAlign: "center",
-    fontWeight: "500",
+    fontWeight: "600",
     paddingHorizontal: 20,
     fontFamily: "Inter-Regular",
+    marginVertical: 4,
   },
   minorTitle: {
     fontSize: 24,
@@ -247,7 +248,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
   },
   cardView: {
-    marginTop: 20,
+    marginTop: 6,
   },
   cardShadow: {
     borderRadius: 18,
