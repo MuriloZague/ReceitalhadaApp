@@ -84,6 +84,10 @@ export default function DashboardScreen() {
         <Text style={styles.pageTitle}>Minha Conta</Text>
 
         <View style={styles.section}>
+          <Image
+            style={{ width: 100, height: 100, alignSelf: 'center', marginBottom: 26 }}
+            source={require("../../assets/images/profile-icon.svg")}
+          />
           <Text style={styles.sectionTitle}>Meus Dados:</Text>
 
           <View style={styles.inputContainer}>
@@ -177,7 +181,7 @@ const styles = StyleSheet.create({
     paddingBottom: 32,
   },
   backButton: {
-    marginBottom: 24,
+    marginBottom: 18,
     flexDirection: "row",
     alignItems: "center",
     gap: 4,
@@ -187,7 +191,7 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     color: "#1A1A1A",
     textAlign: "center",
-    marginBottom: 32,
+    marginBottom: 26,
     fontFamily: "Inter-Regular",
   },
   section: {
