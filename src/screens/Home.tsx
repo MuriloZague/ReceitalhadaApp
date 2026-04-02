@@ -144,7 +144,6 @@ const styles = StyleSheet.create({
   },
   btnPressed: {
     backgroundColor: "#D65A2B",
-    transform: [{ scale: 0.98 }],
   },
   btnSecondary: {
     backgroundColor: "#FFFFFF",
@@ -152,8 +151,6 @@ const styles = StyleSheet.create({
     borderColor: "#E96B35",
   },
   btnPressedSecondary: {
-    backgroundColor: "#FFF4F0",
-    transform: [{ scale: 0.98 }],
   },
   textBtn: {
     textAlign: "center",

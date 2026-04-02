@@ -34,11 +34,11 @@ export default function LoginScreen() {
       await signInWithEmailAndPassword(auth, email, password);
 
       showAlert("Login realizado com sucesso!");
-      setMensagem("Bem-vindo!");
 
       // limpar campos
       setEmail("");
       setPassword("");
+      setLoading(false);
 
       // opcional: navegar para área do usuário
       navigation.navigate("InitialScreen");
@@ -78,7 +78,6 @@ export default function LoginScreen() {
 
   const mensagemColor = mensagem.includes("sucesso") ? "green" : "red";
 
-
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
       <View style={styles.headerApp}>
@@ -116,7 +115,9 @@ export default function LoginScreen() {
               onChangeText={(text: string) => setPassword(text)}
             />
 
-            <TouchableOpacity onPress={() => showAlert("em desenvolvimento...")}>
+            <TouchableOpacity
+              onPress={() => showAlert("em desenvolvimento...")}
+            >
               <Text
                 style={{
                   color: "#E96B35",
@@ -128,12 +129,8 @@ export default function LoginScreen() {
               </Text>
             </TouchableOpacity>
 
-
             <TouchableOpacity
-              style={[
-                styles.submitBtn,
-                loading && styles.submitBtnDisabled,
-              ]}
+              style={[styles.submitBtn, loading && styles.submitBtnDisabled]}
               disabled={loading}
               activeOpacity={0.7}
               onPress={login}
@@ -151,9 +148,15 @@ export default function LoginScreen() {
               </Text>
             </TouchableOpacity>
 
-            
             {mensagem ? (
-              <Text style={{ color: mensagemColor, marginTop: 16, textAlign: "center", fontFamily: "Inter-Regular" }}>
+              <Text
+                style={{
+                  color: mensagemColor,
+                  marginTop: 16,
+                  textAlign: "center",
+                  fontFamily: "Inter-Regular",
+                }}
+              >
                 {mensagem}
               </Text>
             ) : null}
@@ -173,7 +176,7 @@ export default function LoginScreen() {
                 <Text
                   style={{ color: "#E96B35", textDecorationLine: "underline" }}
                 >
-                  Entre!
+                  Crie uma!
                 </Text>
               </TouchableOpacity>
             </Text>
