@@ -4,9 +4,10 @@ import { Ionicons } from "@expo/vector-icons";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { Image } from "expo-image";
 import { useNavigation } from "expo-router";
-import { get, ref } from "firebase/database";
+import { onValue, ref, update } from "firebase/database";
 import React, { useEffect, useState } from "react";
 import {
+  Alert,
   Dimensions,
   ScrollView,
   StyleSheet,
@@ -28,30 +29,61 @@ export default function DashboardScreen() {
     nome: "Carregando...",
     telefone: "Carregando...",
   });
+  const [name, setName] = useState("");
+  const [cellphone, setCellphone] = useState("");
+  const user = auth.currentUser;
 
   useEffect(() => {
-    const loadUserData = async () => {
-      try {
-        const user = auth.currentUser;
-        if (user) {
-          const userRef = ref(database, `users/${user.uid}`);
-          const snapshot = await get(userRef);
+    if (user) {
+      const userRef = ref(database, `users/${user.uid}`);
 
-          if (snapshot.exists()) {
-            const data = snapshot.val();
-            setUserData({
-              nome: data.name || "N/A",
-              telefone: data.cellphone || "N/A",
-            });
-          }
+      const unsubscribe = onValue(userRef, (snapshot) => {
+        if (snapshot.exists()) {
+          const data = snapshot.val();
+          setUserData({
+            nome: data.name || "N/A",
+            telefone: data.cellphone || "N/A",
+          });
         }
-      } catch (error) {
-        console.error("Erro ao carregar dados do usuário:", error);
-      }
-    };
+      });
 
-    loadUserData();
+      return () => unsubscribe();
+    }
   }, []);
+
+  const handleUpdate = async () => {
+    const finalName = name || userData.nome;
+    const finalCellphone = cellphone || userData.telefone;
+
+    if (!finalName || !finalCellphone) {
+      Alert.alert("Atenção", "Preencha todos os campos!");
+      return;
+    }
+
+    try {
+      if (user) {
+        await update(ref(database, `users/${user.uid}`), {
+          name: finalName,
+          cellphone: finalCellphone,
+          updatedAt: new Date().toISOString(),
+        });
+
+        Alert.alert("Sucesso", "Perfil atualizado com sucesso!", [
+          {
+            text: "OK",
+            onPress: () => {
+              navigation.reset({
+                index: 0,
+                routes: [{ name: "HomeScreen" }],
+              });
+            },
+          },
+        ]);
+      }
+    } catch (error: any) {
+      Alert.alert("Erro", error.message);
+    }
+  };
 
   const handleLogout = () => {
     navigation.navigate("HomeScreen");
@@ -85,7 +117,12 @@ export default function DashboardScreen() {
 
         <View style={styles.section}>
           <Image
-            style={{ width: 100, height: 100, alignSelf: 'center', marginBottom: 26 }}
+            style={{
+              width: 100,
+              height: 100,
+              alignSelf: "center",
+              marginBottom: 26,
+            }}
             source={require("../../assets/images/profile-icon.svg")}
           />
           <Text style={styles.sectionTitle}>Meus Dados:</Text>
@@ -94,9 +131,9 @@ export default function DashboardScreen() {
             <Text style={styles.inputLabel}>Nome Completo</Text>
             <TextInput
               style={styles.input}
-              value={userData.nome}
-              onChangeText={(text) => setUserData({ ...userData, nome: text })}
-              editable={false}
+              value={name || userData.nome}
+              onChangeText={setName}
+              editable={true}
             />
           </View>
 
@@ -104,14 +141,20 @@ export default function DashboardScreen() {
             <Text style={styles.inputLabel}>Telefone</Text>
             <TextInput
               style={styles.input}
-              value={userData.telefone}
-              onChangeText={(text) =>
-                setUserData({ ...userData, telefone: text })
-              }
-              editable={false}
+              value={cellphone || userData.telefone}
+              onChangeText={setCellphone}
+              editable={true}
             />
           </View>
         </View>
+
+        <TouchableOpacity
+          style={styles.saveButton}
+          activeOpacity={0.8}
+          onPress={handleUpdate}
+        >
+          <Text style={styles.saveButtonText}>Salvar Alterações</Text>
+        </TouchableOpacity>
 
         <TouchableOpacity
           style={styles.logoutButton}
@@ -269,6 +312,27 @@ const styles = StyleSheet.create({
     fontSize: 17,
     fontWeight: "700",
     color: "white",
+    letterSpacing: 0.5,
+    fontFamily: "Inter-Regular",
+  },
+  saveButton: {
+    backgroundColor: "#FFFFFF",
+    borderWidth: 2,
+    borderColor: "#E96B35",
+    borderRadius: 12,
+    paddingVertical: 16,
+    marginBottom: 14,
+    shadowColor: "#E96B35",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.12,
+    shadowRadius: 8,
+    elevation: 3,
+  },
+  saveButtonText: {
+    textAlign: "center",
+    fontSize: 17,
+    fontWeight: "700",
+    color: "#E96B35",
     letterSpacing: 0.5,
     fontFamily: "Inter-Regular",
   },
