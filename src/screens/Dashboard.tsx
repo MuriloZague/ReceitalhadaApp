@@ -1,6 +1,8 @@
-import { RootStackParamList } from "@/app/(tabs)";
+import { AppTabParamList, RootStackParamList } from "@/app/(tabs)";
 import Waves from "@/components/waves";
 import { Ionicons } from "@expo/vector-icons";
+import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
+import { CompositeNavigationProp } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { Image } from "expo-image";
 import { useNavigation } from "expo-router";
@@ -22,7 +24,10 @@ import { auth, database } from "../services/connectionFirebase";
 
 const { width } = Dimensions.get("window");
 
-type NavProp = StackNavigationProp<RootStackParamList>;
+type NavProp = CompositeNavigationProp<
+  BottomTabNavigationProp<AppTabParamList, "DashBoardScreen">,
+  StackNavigationProp<RootStackParamList>
+>;
 
 export default function DashboardScreen() {
   const navigation = useNavigation<NavProp>();
@@ -115,7 +120,15 @@ export default function DashboardScreen() {
   };
 
   const handleLogout = () => {
-    navigation.navigate("HomeScreen");
+    const parentNavigation =
+      navigation.getParent<StackNavigationProp<RootStackParamList>>();
+
+    if (parentNavigation) {
+      parentNavigation.reset({
+        index: 0,
+        routes: [{ name: "HomeScreen" }],
+      });
+    }
   };
 
   return (
@@ -133,7 +146,7 @@ export default function DashboardScreen() {
         showsVerticalScrollIndicator={false}
       >
         <TouchableOpacity
-          onPress={() => navigation.goBack()}
+          onPress={() => navigation.navigate("InitialScreen")}
           style={styles.backButton}
         >
           <Ionicons name="arrow-back" size={16} color="#888" />
