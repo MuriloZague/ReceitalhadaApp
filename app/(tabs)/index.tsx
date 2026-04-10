@@ -8,12 +8,14 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigatorScreenParams } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import CreateProductScreen from "../../src/screens/CreateProductScreen";
+import UserRecipesModalScreen from "../../src/screens/UserRecipesModalScreen";
 
 export type RootStackParamList = {
   HomeScreen: undefined;
   RegisterScreen: undefined;
   LoginScreen: undefined;
   AppTabs: NavigatorScreenParams<AppTabParamList>;
+  UserRecipesModalScreen: undefined;
 };
 
 export type AppTabParamList = {
@@ -89,6 +91,20 @@ export default function RootStack() {
       <Stack.Screen name="LoginScreen" component={LoginScreen} />
 
       <Stack.Screen name="AppTabs" component={AppTabs} />
+
+      <Stack.Screen
+        name="UserRecipesModalScreen"
+        component={UserRecipesModalScreen}
+        options={{
+          presentation: "modal",
+          headerShown: true,
+          title: "Receitas Criadas",
+          headerTitleStyle: {
+            fontFamily: "Inter-Regular",
+            fontWeight: "700",
+          },
+        }}
+      />
     </Stack.Navigator>
   );
 }

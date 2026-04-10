@@ -1,5 +1,4 @@
 import { AppTabParamList, RootStackParamList } from "@/app/(tabs)";
-import Waves from "@/components/waves";
 import { Ionicons } from "@expo/vector-icons";
 import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
 import { CompositeNavigationProp } from "@react-navigation/native";
@@ -131,6 +130,15 @@ export default function DashboardScreen() {
     }
   };
 
+  const handleOpenMyRecipes = () => {
+    const parentNavigation =
+      navigation.getParent<StackNavigationProp<RootStackParamList>>();
+
+    if (parentNavigation) {
+      parentNavigation.navigate("UserRecipesModalScreen");
+    }
+  };
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#FAFAFA" }}>
       <View style={styles.header}>
@@ -203,6 +211,27 @@ export default function DashboardScreen() {
           </View>
         </View>
 
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Minhas Receitas:</Text>
+
+          <TouchableOpacity
+            style={styles.actionButton}
+            activeOpacity={0.8}
+            onPress={handleOpenMyRecipes}
+          >
+            <Ionicons
+              name="restaurant-outline"
+              size={20}
+              color="#E96B35"
+              style={styles.actionIcon}
+            />
+            <Text style={styles.actionButtonText}>
+              Acessar Receitas Criadas
+            </Text>
+            <Ionicons name="chevron-forward" size={18} color="#E96B35" />
+          </TouchableOpacity>
+        </View>
+
         {isEditing && (
           <TouchableOpacity
             style={[styles.saveButton, isSaving && styles.saveButtonDisabled]}
@@ -229,8 +258,6 @@ export default function DashboardScreen() {
           <Text style={styles.logoutButtonText}>Sair da Conta</Text>
         </TouchableOpacity>
       </ScrollView>
-
-      <Waves height={100} color="#E96B35" />
     </SafeAreaView>
   );
 }
