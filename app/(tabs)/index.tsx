@@ -7,6 +7,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigatorScreenParams } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
+import CreateProductScreen from "../../src/screens/CreateProductScreen";
 
 export type RootStackParamList = {
   HomeScreen: undefined;
@@ -17,6 +18,7 @@ export type RootStackParamList = {
 
 export type AppTabParamList = {
   InitialScreen: undefined;
+  CreateProductScreen: undefined;
   DashBoardScreen: undefined;
 };
 
@@ -46,7 +48,11 @@ function AppTabs() {
         },
         tabBarIcon: ({ color, size }) => {
           const iconName =
-            route.name === "InitialScreen" ? "home-outline" : "person-outline";
+            route.name === "InitialScreen"
+              ? "home-outline"
+              : route.name === "CreateProductScreen"
+                ? "restaurant-outline"
+                : "person-outline";
           return <Ionicons name={iconName} size={size} color={color} />;
         },
       })}
@@ -55,6 +61,11 @@ function AppTabs() {
         name="InitialScreen"
         component={InitialScreen}
         options={{ tabBarLabel: "Inicio" }}
+      />
+      <Tab.Screen
+        name="CreateProductScreen"
+        component={CreateProductScreen}
+        options={{ tabBarLabel: "Receita" }}
       />
       <Tab.Screen
         name="DashBoardScreen"
