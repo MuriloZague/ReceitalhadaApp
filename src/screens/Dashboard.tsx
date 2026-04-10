@@ -7,6 +7,7 @@ import { useNavigation } from "expo-router";
 import { onValue, ref, update } from "firebase/database";
 import React, { useEffect, useState } from "react";
 import {
+  ActivityIndicator,
   Alert,
   Dimensions,
   ScrollView,
@@ -31,6 +32,8 @@ export default function DashboardScreen() {
   });
   const [name, setName] = useState("");
   const [cellphone, setCellphone] = useState("");
+  const [isEditing, setIsEditing] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const user = auth.currentUser;
 
   useEffect(() => {
@@ -51,37 +54,63 @@ export default function DashboardScreen() {
     }
   }, []);
 
+  const handleToggleEdit = () => {
+    if (isSaving) {
+      return;
+    }
+
+    if (isEditing) {
+      setName("");
+      setCellphone("");
+      setIsEditing(false);
+      return;
+    }
+
+    setName(userData.nome === "N/A" ? "" : userData.nome);
+    setCellphone(userData.telefone === "N/A" ? "" : userData.telefone);
+    setIsEditing(true);
+  };
+
   const handleUpdate = async () => {
-    const finalName = name || userData.nome;
-    const finalCellphone = cellphone || userData.telefone;
+    if (!isEditing || isSaving) {
+      return;
+    }
+
+    const finalName = name.trim();
+    const finalCellphone = cellphone.trim();
 
     if (!finalName || !finalCellphone) {
       Alert.alert("Atenção", "Preencha todos os campos!");
       return;
     }
 
-    try {
-      if (user) {
-        await update(ref(database, `users/${user.uid}`), {
-          name: finalName,
-          cellphone: finalCellphone,
-          updatedAt: new Date().toISOString(),
-        });
+    if (!user) {
+      Alert.alert("Erro", "Usuário não autenticado.");
+      return;
+    }
 
-        Alert.alert("Sucesso", "Perfil atualizado com sucesso!", [
-          {
-            text: "OK",
-            onPress: () => {
-              navigation.reset({
-                index: 0,
-                routes: [{ name: "HomeScreen" }],
-              });
-            },
-          },
-        ]);
-      }
+    setIsSaving(true);
+
+    try {
+      await update(ref(database, `users/${user.uid}`), {
+        name: finalName,
+        cellphone: finalCellphone,
+        updatedAt: new Date().toISOString(),
+      });
+
+      setUserData({
+        nome: finalName,
+        telefone: finalCellphone,
+      });
+      setName("");
+      setCellphone("");
+      setIsEditing(false);
+
+      Alert.alert("Sucesso", "Perfil atualizado com sucesso!");
     } catch (error: any) {
       Alert.alert("Erro", error.message);
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -125,36 +154,59 @@ export default function DashboardScreen() {
             }}
             source={require("../../assets/images/profile-icon.svg")}
           />
-          <Text style={styles.sectionTitle}>Meus Dados:</Text>
+
+          <View style={styles.sectionHeader}>
+            <Text style={styles.sectionTitle}>Meus Dados:</Text>
+            <TouchableOpacity
+              style={[styles.editButton, isSaving && styles.editButtonDisabled]}
+              activeOpacity={0.8}
+              onPress={handleToggleEdit}
+              disabled={isSaving}
+            >
+              <Text style={styles.editButtonText}>
+                {isEditing ? "Cancelar" : "Editar"}
+              </Text>
+            </TouchableOpacity>
+          </View>
 
           <View style={styles.inputContainer}>
             <Text style={styles.inputLabel}>Nome Completo</Text>
             <TextInput
-              style={styles.input}
-              value={name || userData.nome}
+              style={[styles.input, !isEditing && styles.inputDisabled]}
+              value={isEditing ? name : userData.nome}
               onChangeText={setName}
-              editable={true}
+              editable={isEditing && !isSaving}
             />
           </View>
 
           <View style={styles.inputContainer}>
             <Text style={styles.inputLabel}>Telefone</Text>
             <TextInput
-              style={styles.input}
-              value={cellphone || userData.telefone}
+              style={[styles.input, !isEditing && styles.inputDisabled]}
+              value={isEditing ? cellphone : userData.telefone}
               onChangeText={setCellphone}
-              editable={true}
+              editable={isEditing && !isSaving}
             />
           </View>
         </View>
 
-        <TouchableOpacity
-          style={styles.saveButton}
-          activeOpacity={0.8}
-          onPress={handleUpdate}
-        >
-          <Text style={styles.saveButtonText}>Salvar Alterações</Text>
-        </TouchableOpacity>
+        {isEditing && (
+          <TouchableOpacity
+            style={[styles.saveButton, isSaving && styles.saveButtonDisabled]}
+            activeOpacity={0.8}
+            onPress={handleUpdate}
+            disabled={isSaving}
+          >
+            {isSaving ? (
+              <View style={styles.saveButtonContent}>
+                <ActivityIndicator size="small" color="#E96B35" />
+                <Text style={styles.saveButtonText}>Salvando...</Text>
+              </View>
+            ) : (
+              <Text style={styles.saveButtonText}>Salvar Alterações</Text>
+            )}
+          </TouchableOpacity>
+        )}
 
         <TouchableOpacity
           style={styles.logoutButton}
@@ -244,8 +296,31 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "900",
     color: "#1A1A1A",
-    marginBottom: 16,
+    marginBottom: 0,
     fontFamily: "Inter-Regular",
+  },
+  sectionHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 16,
+  },
+  editButton: {
+    borderWidth: 1,
+    borderColor: "#E96B35",
+    borderRadius: 999,
+    paddingHorizontal: 14,
+    paddingVertical: 6,
+    backgroundColor: "#FFF7F2",
+  },
+  editButtonText: {
+    color: "#E96B35",
+    fontSize: 13,
+    fontWeight: "700",
+    fontFamily: "Inter-Regular",
+  },
+  editButtonDisabled: {
+    opacity: 0.65,
   },
   inputContainer: {
     marginBottom: 16,
@@ -269,6 +344,10 @@ const styles = StyleSheet.create({
     fontWeight: "500",
     color: "#1A1A1A",
     fontFamily: "Inter-Regular",
+  },
+  inputDisabled: {
+    backgroundColor: "#F6F6F6",
+    color: "#8C8C8C",
   },
   actionButton: {
     flexDirection: "row",
@@ -327,6 +406,15 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.12,
     shadowRadius: 8,
     elevation: 3,
+  },
+  saveButtonDisabled: {
+    opacity: 0.7,
+  },
+  saveButtonContent: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 8,
   },
   saveButtonText: {
     textAlign: "center",
