@@ -40,9 +40,10 @@ export default function LoginScreen() {
       setPassword("");
       setLoading(false);
 
-      // opcional: navegar para área do usuário
-      navigation.navigate("InitialScreen");
-      // navigation.navigate("AreaUser");
+      navigation.reset({
+        index: 0,
+        routes: [{ name: "AppTabs" }],
+      });
     } catch (error: any) {
       setLoading(false);
       showAlert("E-mail ou senha inválidos");

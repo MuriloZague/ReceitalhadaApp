@@ -1,6 +1,6 @@
-import { RootStackParamList } from "@/app/(tabs)";
+import { AppTabParamList } from "@/app/(tabs)";
 import { Ionicons } from "@expo/vector-icons";
-import { StackNavigationProp } from "@react-navigation/stack";
+import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
 import { Image } from "expo-image";
 import { useNavigation } from "expo-router";
 import React, { useState } from "react";
@@ -18,7 +18,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 //import Recipes from "@/components/recipes";
 
-type NavProp = StackNavigationProp<RootStackParamList>;
+type NavProp = BottomTabNavigationProp<AppTabParamList, "InitialScreen">;
 
 export default function Home() {
   const navigation = useNavigation<NavProp>();
@@ -113,7 +113,10 @@ export default function Home() {
 
         <View style={styles.titleContainer}>
           <Text style={styles.title}>
-            Encontre A <Text style={{ color: "#E96B35", fontWeight: 700 }}>Melhor Receita</Text>{" "}
+            Encontre A{" "}
+            <Text style={{ color: "#E96B35", fontWeight: 700 }}>
+              Melhor Receita
+            </Text>{" "}
             Para A Sua Fome
           </Text>
           <View style={styles.inputWrapper}>
