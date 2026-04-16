@@ -25,7 +25,6 @@ export default function CreateProductScreen() {
   const [recipeName, setRecipeName] = useState("");
   const [category, setCategory] = useState("");
   const [prepTime, setPrepTime] = useState("");
-  const [servings, setServings] = useState("");
   const [ingredients, setIngredients] = useState("");
   const [instructions, setInstructions] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -34,7 +33,6 @@ export default function CreateProductScreen() {
     const finalRecipeName = recipeName.trim();
     const finalCategory = category.trim();
     const finalPrepTime = prepTime.trim();
-    const finalServings = servings.trim();
     const finalIngredients = ingredients.trim();
     const finalInstructions = instructions.trim();
 
@@ -42,7 +40,6 @@ export default function CreateProductScreen() {
       !finalRecipeName ||
       !finalCategory ||
       !finalPrepTime ||
-      !finalServings ||
       !finalIngredients ||
       !finalInstructions
     ) {
@@ -51,15 +48,9 @@ export default function CreateProductScreen() {
     }
 
     const prepTimeValue = Number(finalPrepTime);
-    const servingsValue = Number(finalServings);
 
     if (Number.isNaN(prepTimeValue) || prepTimeValue <= 0) {
       Alert.alert("Atenção", "Informe um tempo de preparo válido em minutos.");
-      return;
-    }
-
-    if (Number.isNaN(servingsValue) || servingsValue <= 0) {
-      Alert.alert("Atenção", "Informe uma quantidade de porções válida.");
       return;
     }
 
@@ -91,7 +82,6 @@ export default function CreateProductScreen() {
     //  setRecipeName("");
     //  setCategory("");
     //  setPrepTime("");
-    //  setServings("");
     //  setIngredients("");
     //  setInstructions("");
     //} catch (error) {
@@ -108,7 +98,6 @@ export default function CreateProductScreen() {
     setRecipeName("");
     setCategory("");
     setPrepTime("");
-    setServings("");
     setIngredients("");
     setInstructions("");
   }, 800);
@@ -165,16 +154,6 @@ return (
                 placeholder="Ex: 45"
                 value={prepTime}
                 onChangeText={setPrepTime}
-                keyboardType="number-pad"
-                editable={!isSubmitting}
-              />
-
-              <Text style={styles.labelText}>Porções</Text>
-              <TextInput
-                style={styles.input}
-                placeholder="Ex: 6"
-                value={servings}
-                onChangeText={setServings}
                 keyboardType="number-pad"
                 editable={!isSubmitting}
               />
