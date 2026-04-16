@@ -4,17 +4,18 @@ import { Image } from "expo-image";
 import { useNavigation } from "expo-router";
 import React, { useState } from "react";
 import {
-    Alert,
-    KeyboardAvoidingView,
-    Platform,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { auth } from "../services/connectionFirebase";
 
 type NavProp = BottomTabNavigationProp<AppTabParamList, "CreateProductScreen">;
 
@@ -62,135 +63,172 @@ export default function CreateProductScreen() {
       return;
     }
 
+    const user = auth.currentUser;
+
+    if (!user) {
+      Alert.alert("Erro", "Usuário não autenticado.");
+      return;
+    }
+
     setIsSubmitting(true);
 
-    setTimeout(() => {
-      setIsSubmitting(false);
-      Alert.alert("Sucesso", "Receita cadastrada com sucesso!");
-      setRecipeName("");
-      setCategory("");
-      setPrepTime("");
-      setServings("");
-      setIngredients("");
-      setInstructions("");
-    }, 800);
-  };
+    //try {
+    //  const recipesRef = ref(database, `users/${user.uid}/recipes`);
 
-  return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
-      <View style={styles.headerApp}>
-        <Image
-          style={{ width: 155, height: 30 }}
-          source={require("../../assets/images/logoReceitalhada.png")}
-        />
-      </View>
+    //  await push(recipesRef, {
+    //    nomeReceita: finalRecipeName,
+    //    categoria: finalCategory,
+    //    tempoPreparo: prepTimeValue,
+    //    porcoes: servingsValue,
+    //    ingredientes: finalIngredients,
+    //    modoPreparo: finalInstructions,
+    //    createdAt: new Date().toISOString(),
+    //  });
 
-      <KeyboardAvoidingView
-        style={styles.keyboardContainer}
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
+    //  Alert.alert("Sucesso", "Receita cadastrada com sucesso!");
+
+      // limpa os campos
+    //  setRecipeName("");
+    //  setCategory("");
+    //  setPrepTime("");
+    //  setServings("");
+    //  setIngredients("");
+    //  setInstructions("");
+    //} catch (error) {
+    //  console.log(error);
+    //  Alert.alert("Erro", "Não foi possível salvar a receita.");
+    //} finally {
+    //  setIsSubmitting(false);
+    //}
+  //};
+
+  setTimeout(() => {
+    setIsSubmitting(false);
+    Alert.alert("Sucesso", "Receita cadastrada com sucesso!");
+    setRecipeName("");
+    setCategory("");
+    setPrepTime("");
+    setServings("");
+    setIngredients("");
+    setInstructions("");
+  }, 800);
+};
+
+return (
+  <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
+    <View style={styles.headerApp}>
+      <Image
+        style={{ width: 155, height: 30 }}
+        source={require("../../assets/images/logoReceitalhada.png")}
+      />
+    </View>
+
+    <KeyboardAvoidingView
+      style={styles.keyboardContainer}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
+      <ScrollView
+        contentContainerStyle={styles.scrollContent}
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
       >
-        <ScrollView
-          contentContainerStyle={styles.scrollContent}
-          keyboardShouldPersistTaps="handled"
-          showsVerticalScrollIndicator={false}
-        >
-          <View style={styles.formContainer}>
-            <View style={styles.form}>
-              <View style={styles.boxTitleForm}>
-                <Text style={styles.titleForm}>
-                  Nova <Text style={{ color: "#E96B35" }}>Receita</Text>
+        <View style={styles.formContainer}>
+          <View style={styles.form}>
+            <View style={styles.boxTitleForm}>
+              <Text style={styles.titleForm}>
+                Nova <Text style={{ color: "#E96B35" }}>Receita</Text>
+              </Text>
+            </View>
+
+            <View style={styles.formContent}>
+              <Text style={styles.labelText}>Nome da Receita</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Ex: Bolo de Cenoura"
+                value={recipeName}
+                onChangeText={setRecipeName}
+                editable={!isSubmitting}
+              />
+
+              <Text style={styles.labelText}>Categoria</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Ex: Doces"
+                value={category}
+                onChangeText={setCategory}
+                editable={!isSubmitting}
+              />
+
+              <Text style={styles.labelText}>Tempo de Preparo (min)</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Ex: 45"
+                value={prepTime}
+                onChangeText={setPrepTime}
+                keyboardType="number-pad"
+                editable={!isSubmitting}
+              />
+
+              <Text style={styles.labelText}>Porções</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Ex: 6"
+                value={servings}
+                onChangeText={setServings}
+                keyboardType="number-pad"
+                editable={!isSubmitting}
+              />
+
+              <Text style={styles.labelText}>Ingredientes</Text>
+              <TextInput
+                style={[styles.input, styles.textArea]}
+                placeholder="Ex: 2 cenouras, 3 ovos, 2 xícaras de farinha..."
+                value={ingredients}
+                onChangeText={setIngredients}
+                editable={!isSubmitting}
+                multiline
+                textAlignVertical="top"
+              />
+
+              <Text style={styles.labelText}>Modo de Preparo</Text>
+              <TextInput
+                style={[styles.input, styles.textArea]}
+                placeholder="Descreva o passo a passo da receita"
+                value={instructions}
+                onChangeText={setInstructions}
+                editable={!isSubmitting}
+                multiline
+                textAlignVertical="top"
+              />
+
+              <TouchableOpacity
+                style={[
+                  styles.submitBtn,
+                  isSubmitting && styles.submitBtnDisabled,
+                ]}
+                activeOpacity={0.7}
+                onPress={handleCreateRecipe}
+                disabled={isSubmitting}
+              >
+                <Text style={styles.submitBtnText}>
+                  {isSubmitting ? "Salvando..." : "Cadastrar Receita"}
                 </Text>
-              </View>
+              </TouchableOpacity>
 
-              <View style={styles.formContent}>
-                <Text style={styles.labelText}>Nome da Receita</Text>
-                <TextInput
-                  style={styles.input}
-                  placeholder="Ex: Bolo de Cenoura"
-                  value={recipeName}
-                  onChangeText={setRecipeName}
-                  editable={!isSubmitting}
-                />
-
-                <Text style={styles.labelText}>Categoria</Text>
-                <TextInput
-                  style={styles.input}
-                  placeholder="Ex: Doces"
-                  value={category}
-                  onChangeText={setCategory}
-                  editable={!isSubmitting}
-                />
-
-                <Text style={styles.labelText}>Tempo de Preparo (min)</Text>
-                <TextInput
-                  style={styles.input}
-                  placeholder="Ex: 45"
-                  value={prepTime}
-                  onChangeText={setPrepTime}
-                  keyboardType="number-pad"
-                  editable={!isSubmitting}
-                />
-
-                <Text style={styles.labelText}>Porções</Text>
-                <TextInput
-                  style={styles.input}
-                  placeholder="Ex: 6"
-                  value={servings}
-                  onChangeText={setServings}
-                  keyboardType="number-pad"
-                  editable={!isSubmitting}
-                />
-
-                <Text style={styles.labelText}>Ingredientes</Text>
-                <TextInput
-                  style={[styles.input, styles.textArea]}
-                  placeholder="Ex: 2 cenouras, 3 ovos, 2 xícaras de farinha..."
-                  value={ingredients}
-                  onChangeText={setIngredients}
-                  editable={!isSubmitting}
-                  multiline
-                  textAlignVertical="top"
-                />
-
-                <Text style={styles.labelText}>Modo de Preparo</Text>
-                <TextInput
-                  style={[styles.input, styles.textArea]}
-                  placeholder="Descreva o passo a passo da receita"
-                  value={instructions}
-                  onChangeText={setInstructions}
-                  editable={!isSubmitting}
-                  multiline
-                  textAlignVertical="top"
-                />
-
-                <TouchableOpacity
-                  style={[
-                    styles.submitBtn,
-                    isSubmitting && styles.submitBtnDisabled,
-                  ]}
-                  activeOpacity={0.7}
-                  onPress={handleCreateRecipe}
-                  disabled={isSubmitting}
-                >
-                  <Text style={styles.submitBtnText}>
-                    {isSubmitting ? "Salvando..." : "Cadastrar Receita"}
-                  </Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                  style={styles.goToHomeButton}
-                  activeOpacity={0.7}
-                  onPress={() => navigation.navigate("InitialScreen")}
-                >
-                  <Text style={styles.goToHomeText}>Voltar para Inicio</Text>
-                </TouchableOpacity>
-              </View>
+              <TouchableOpacity
+                style={styles.goToHomeButton}
+                activeOpacity={0.7}
+                onPress={() => navigation.navigate("InitialScreen")}
+              >
+                <Text style={styles.goToHomeText}>Voltar para Inicio</Text>
+              </TouchableOpacity>
             </View>
           </View>
-        </ScrollView>
-      </KeyboardAvoidingView>
-    </SafeAreaView>
-  );
+        </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
+  </SafeAreaView>
+);
 }
 
 const styles = StyleSheet.create({
