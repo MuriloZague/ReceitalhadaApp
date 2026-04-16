@@ -262,8 +262,8 @@ const styles = StyleSheet.create({
     elevation: 6,
   },
   card: {
-    width: 180,
-    height: 90,
+    width: 160,
+    height: 80,
     justifyContent: "center",
     alignItems: "center",
     overflow: "hidden",
