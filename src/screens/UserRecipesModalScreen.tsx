@@ -1,5 +1,5 @@
 import { Image } from "expo-image";
-import { onValue, ref } from "firebase/database";
+import {  push, onValue, ref } from "firebase/database";
 import React, { useEffect, useState } from "react";
 import {
     ActivityIndicator,
@@ -13,9 +13,11 @@ import { auth, database } from "../services/connectionFirebase";
 
 type UserRecipe = {
   id: string;
-  title: string;
-  category: string;
-  prepTime: string;
+  nomeReceita: string;
+  categoria: string;
+  tempoPreparo: string;
+  modoPreparo: string;
+  ingredientes: string;
 };
 
 export default function UserRecipesModalScreen() {
@@ -43,13 +45,16 @@ export default function UserRecipesModalScreen() {
       const formattedRecipes: UserRecipe[] = Object.entries(data).map(
         ([id, recipe]) => ({
           id,
-          title: recipe.title || "Sem titulo",
-          category: recipe.category || "Sem categoria",
-          prepTime: recipe.prepTime || "-",
+          nomeReceita: recipe.nomeReceita || "Sem titulo",
+          categoria: recipe.categoria || "Sem categoria",
+          tempoPreparo: recipe.tempoPreparo || "-",
+          modoPreparo: recipe.modoPreparo || "-",
+          ingredientes: recipe.ingredientes || "-",
         }),
       );
 
       setRecipes(formattedRecipes);
+      console.log(formattedRecipes)
       setIsLoading(false);
     });
 
@@ -65,7 +70,7 @@ export default function UserRecipesModalScreen() {
             source={require("../../assets/images/logoReceitalhada.png")}
           />
           <Text style={styles.bannerText}>
-            Aqui aparecem as receitas criadas por voce.
+            Aqui aparecem as receitas criadas por você
           </Text>
         </View>
 
@@ -88,12 +93,15 @@ export default function UserRecipesModalScreen() {
             contentContainerStyle={styles.listContent}
             renderItem={({ item }) => (
               <View style={styles.recipeCard}>
-                <Text style={styles.recipeTitle}>{item.title}</Text>
+                <Text style={styles.recipeTitle}>{item.nomeReceita}</Text>
                 <Text style={styles.recipeMeta}>
-                  Categoria: {item.category}
+                  Categoria: {item.categoria}
                 </Text>
                 <Text style={styles.recipeMeta}>
-                  Tempo de preparo: {item.prepTime} min
+                  Tempo de preparo: {item.tempoPreparo} min
+                </Text>
+                <Text style={styles.recipeMeta}>
+                  Ingredientes: {item.ingredientes} min
                 </Text>
               </View>
             )}
