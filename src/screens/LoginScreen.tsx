@@ -33,8 +33,6 @@ export default function LoginScreen() {
     try {
       await signInWithEmailAndPassword(auth, email, password);
 
-      showAlert("Login realizado com sucesso!");
-
       // limpar campos
       setEmail("");
       setPassword("");
@@ -46,7 +44,6 @@ export default function LoginScreen() {
       });
     } catch (error: any) {
       setLoading(false);
-      showAlert("E-mail ou senha inválidos");
       setMensagem("Erro ao realizar login");
     }
   }
@@ -55,13 +52,11 @@ export default function LoginScreen() {
 
   function validateFields(): boolean {
     if (!email || !password) {
-      showAlert("Preencha todos os campos");
       setMensagem("Preencha todos os campos");
       return false;
     }
 
     if (!emailRegex.test(email)) {
-      showAlert("Digite um e-mail válido");
       setMensagem("Digite um e-mail válido");
       return false;
     }
@@ -69,13 +64,6 @@ export default function LoginScreen() {
     return true;
   }
 
-  function showAlert(msg: string) {
-    if (Platform.OS === "web") {
-      alert(msg);
-    } else {
-      Alert.alert("Atenção", msg);
-    }
-  }
 
   const mensagemColor = mensagem.includes("sucesso") ? "green" : "red";
 
@@ -117,7 +105,6 @@ export default function LoginScreen() {
             />
 
             <TouchableOpacity
-              onPress={() => showAlert("em desenvolvimento...")}
             >
               <Text
                 style={{
