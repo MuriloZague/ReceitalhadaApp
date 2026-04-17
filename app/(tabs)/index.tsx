@@ -3,6 +3,7 @@ import HomeScreen from "@/src/screens/Home";
 import InitialScreen from "@/src/screens/InitialScreen";
 import LoginScreen from "@/src/screens/LoginScreen";
 import RegisterScreen from "@/src/screens/RegisterScreen";
+import { appTheme } from "@/src/styles/appTheme";
 import { Ionicons } from "@expo/vector-icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigatorScreenParams } from "@react-navigation/native";
@@ -33,28 +34,47 @@ function AppTabs() {
       initialRouteName="InitialScreen"
       screenOptions={({ route }) => ({
         headerShown: false,
-        tabBarActiveTintColor: "#E96B35",
-        tabBarInactiveTintColor: "#9B9B9B",
+        sceneStyle: {
+          backgroundColor: appTheme.colors.background,
+        },
+        tabBarActiveTintColor: appTheme.colors.primary,
+        tabBarInactiveTintColor: appTheme.colors.textMuted,
         tabBarStyle: {
-          height: 62,
-          paddingBottom: 8,
+          position: "absolute",
+          height: 70,
+          left: 14,
+          right: 14,
+          bottom: 12,
+          borderTopWidth: 0,
+          borderRadius: appTheme.radius.lg,
+          backgroundColor: appTheme.colors.surface,
+          paddingBottom: 10,
           paddingTop: 8,
-          borderTopWidth: 1,
-          borderTopColor: "#F0F0F0",
-          backgroundColor: "#FFFFFF",
+          ...appTheme.shadows.strong,
+          marginHorizontal: 12
         },
         tabBarLabelStyle: {
-          fontFamily: "Inter-Regular",
-          fontSize: 12,
-          fontWeight: "600",
+          fontFamily: appTheme.typography.family,
+          fontSize: 11,
+          fontWeight: "700",
         },
-        tabBarIcon: ({ color, size }) => {
+        tabBarItemStyle: {
+          marginHorizontal: 6,
+          borderRadius: appTheme.radius.md,
+        },
+        tabBarIcon: ({ color, size, focused }) => {
           const iconName =
             route.name === "InitialScreen"
-              ? "home-outline"
+              ? focused
+                ? "home"
+                : "home-outline"
               : route.name === "CreateProductScreen"
-                ? "restaurant-outline"
-                : "person-outline";
+                ? focused
+                  ? "restaurant"
+                  : "restaurant-outline"
+                : focused
+                  ? "person"
+                  : "person-outline";
           return <Ionicons name={iconName} size={size} color={color} />;
         },
       })}
@@ -99,10 +119,16 @@ export default function RootStack() {
           presentation: "modal",
           headerShown: true,
           title: "Receitas Criadas",
+          headerStyle: {
+            backgroundColor: appTheme.colors.surface,
+          },
+          headerTintColor: appTheme.colors.primaryDark,
           headerTitleStyle: {
-            fontFamily: "Inter-Regular",
+            color: appTheme.colors.textPrimary,
+            fontFamily: appTheme.typography.family,
             fontWeight: "700",
           },
+          headerShadowVisible: false,
         }}
       />
     </Stack.Navigator>

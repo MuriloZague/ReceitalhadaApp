@@ -1,4 +1,6 @@
 import { RootStackParamList } from "@/app/(tabs)";
+import { appTheme } from "@/src/styles/appTheme";
+import { Ionicons } from "@expo/vector-icons";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { Image } from "expo-image";
 import { useNavigation } from "expo-router";
@@ -106,7 +108,9 @@ export default function RegisterScreen() {
   }
 
   // Cor da mensagem: verde se sucesso, vermelho se erro
-  const mensagemColor = mensagem.includes("sucesso") ? "green" : "red";
+  const mensagemColor = mensagem.includes("sucesso")
+    ? appTheme.colors.success
+    : appTheme.colors.danger;
 
   // Indicador visual de força da senha
   const passwordStrength =
@@ -115,11 +119,12 @@ export default function RegisterScreen() {
       : password.length < 8
         ? { label: "Senha fraca", color: "#e53e3e" }
         : password.length < 12
-          ? { label: "Senha razoável", color: "#dd6b20" }
+          ? { label: "Senha razoavel", color: "#dd6b20" }
           : { label: "Senha forte", color: "#38a169" };
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
+    <SafeAreaView style={styles.safeArea}>
+      <View style={styles.topGlow} />
       <View style={styles.headerApp}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Image
@@ -127,158 +132,202 @@ export default function RegisterScreen() {
             source={require("../../assets/images/logoReceitalhada.png")}
           />
         </TouchableOpacity>
+
+        <View style={styles.headerBadge}>
+          <Ionicons name="person-add-outline" size={14} color="#D4550B" />
+          <Text style={styles.headerBadgeText}>Cadastro</Text>
+        </View>
       </View>
 
       <KeyboardAvoidingView
-        style={{ flex: 1 }}
+        style={styles.keyboardContainer}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
         <ScrollView
-          contentContainerStyle={{ paddingBottom: 32 }}
+          contentContainerStyle={styles.scrollContent}
           keyboardShouldPersistTaps="handled"
+          keyboardDismissMode="on-drag"
           showsVerticalScrollIndicator={false}
         >
           <View style={styles.loginForm}>
-            <View style={styles.form}>
-              <View style={styles.boxTitleForm}>
-                <Text style={styles.titleForm}>
-                  Bem Vindo Ao{" "}
-                  <Text style={{ color: "#E96B35" }}>Receitalhada!</Text>
-                </Text>
-              </View>
+            <Text style={styles.titleForm}>
+              Criar sua conta no
+              <Text style={styles.titleAccent}> Receitalhada</Text>
+            </Text>
+            <Text style={styles.subtitleForm}>
+              Preencha seus dados para publicar e salvar receitas com
+              facilidade.
+            </Text>
 
-              <View style={styles.formContent}>
-                <Text style={styles.labelText}>Nome</Text>
+            <View style={styles.formContent}>
+              <Text style={styles.labelText}>Nome</Text>
+              <View style={styles.inputContainer}>
+                <Ionicons
+                  name="person-outline"
+                  size={18}
+                  color={appTheme.colors.textMuted}
+                />
                 <TextInput
                   style={styles.input}
                   placeholder="Seu Nome"
+                  placeholderTextColor={appTheme.colors.textMuted}
                   value={name}
                   onChangeText={(text: string) => setName(text)}
                 />
+              </View>
 
-                <Text style={styles.labelText}>E-mail</Text>
+              <Text style={styles.labelText}>E-mail</Text>
+              <View style={styles.inputContainer}>
+                <Ionicons
+                  name="mail-outline"
+                  size={18}
+                  color={appTheme.colors.textMuted}
+                />
                 <TextInput
                   style={styles.input}
-                  placeholder="email@email.com"
+                  placeholder="email@exemplo.com"
+                  placeholderTextColor={appTheme.colors.textMuted}
                   value={email}
                   onChangeText={(text: string) => setEmail(text)}
                   keyboardType="email-address"
                   autoCapitalize="none"
                 />
+              </View>
 
-                <Text style={styles.labelText}>Telefone</Text>
+              <Text style={styles.labelText}>Telefone</Text>
+              <View style={styles.inputContainer}>
+                <Ionicons
+                  name="call-outline"
+                  size={18}
+                  color={appTheme.colors.textMuted}
+                />
                 <TextInput
                   style={styles.input}
                   placeholder="(12) 34567-8901"
+                  placeholderTextColor={appTheme.colors.textMuted}
                   value={cellphone}
                   onChangeText={handleCellphoneChange}
                   keyboardType="phone-pad"
                   maxLength={16}
                 />
+              </View>
 
-                <Text style={styles.labelText}>Senha</Text>
+              <Text style={styles.labelText}>Senha</Text>
+              <View style={styles.inputContainer}>
+                <Ionicons
+                  name="lock-closed-outline"
+                  size={18}
+                  color={appTheme.colors.textMuted}
+                />
                 <TextInput
                   style={styles.input}
                   placeholder="Mínimo 8 caracteres"
+                  placeholderTextColor={appTheme.colors.textMuted}
                   secureTextEntry
                   value={password}
                   onChangeText={(text: string) => setPassword(text)}
                 />
-                {passwordStrength && (
-                  <Text
-                    style={[
-                      styles.strengthText,
-                      { color: passwordStrength.color },
-                    ]}
-                  >
-                    {passwordStrength.label}
-                  </Text>
-                )}
-                <Text style={[styles.labelText, { marginTop: 4 }]}>
-                  Confirmar Senha
-                </Text>
-                <TextInput
+              </View>
+
+              {passwordStrength && (
+                <Text
                   style={[
-                    styles.input,
-                    confirmPassword.length > 0 && {
-                      borderWidth: 1.5,
-                      borderColor:
-                        confirmPassword === password ? "#38a169" : "#e53e3e",
-                    },
+                    styles.strengthText,
+                    { color: passwordStrength.color },
                   ]}
+                >
+                  {passwordStrength.label}
+                </Text>
+              )}
+
+              <Text style={[styles.labelText, styles.confirmLabel]}>
+                Confirmar Senha
+              </Text>
+              <View
+                style={[
+                  styles.inputContainer,
+                  confirmPassword.length > 0 && {
+                    borderWidth: 1.5,
+                    borderColor:
+                      confirmPassword === password
+                        ? appTheme.colors.success
+                        : appTheme.colors.danger,
+                  },
+                ]}
+              >
+                <Ionicons
+                  name="shield-checkmark-outline"
+                  size={18}
+                  color={appTheme.colors.textMuted}
+                />
+                <TextInput
+                  style={styles.input}
                   placeholder="Repita sua senha"
+                  placeholderTextColor={appTheme.colors.textMuted}
                   secureTextEntry
                   value={confirmPassword}
                   onChangeText={(text: string) => setConfirmPassword(text)}
                 />
-                {confirmPassword.length > 0 && (
+              </View>
+
+              {confirmPassword.length > 0 && (
+                <View style={styles.confirmationRow}>
+                  <Ionicons
+                    name={
+                      confirmPassword === password
+                        ? "checkmark-circle-outline"
+                        : "close-circle-outline"
+                    }
+                    size={14}
+                    color={
+                      confirmPassword === password
+                        ? appTheme.colors.success
+                        : appTheme.colors.danger
+                    }
+                  />
                   <Text
-                    style={{
-                      fontSize: 12,
-                      marginTop: -6,
-                      marginBottom: 8,
-                      color:
-                        confirmPassword === password ? "#38a169" : "#e53e3e",
-                      fontFamily: "Inter-Regular",
-                    }}
+                    style={[
+                      styles.confirmationText,
+                      {
+                        color:
+                          confirmPassword === password
+                            ? appTheme.colors.success
+                            : appTheme.colors.danger,
+                      },
+                    ]}
                   >
                     {confirmPassword === password
-                      ? "✓ Senhas coincidem"
-                      : "✗ Senhas não coincidem"}
+                      ? "Senhas coincidem"
+                      : "Senhas nao coincidem"}
                   </Text>
-                )}
+                </View>
+              )}
 
-                {mensagem ? (
-                  <Text style={{ color: mensagemColor, marginBottom: 4 }}>
-                    {mensagem}
-                  </Text>
-                ) : null}
-
-                <TouchableOpacity
-                  style={[
-                    styles.submitBtn,
-                    loading && styles.submitBtnDisabled,
-                  ]}
-                  activeOpacity={0.7}
-                  onPress={registerUser}
-                  disabled={loading}
-                >
-                  <Text
-                    style={{
-                      fontSize: 17,
-                      color: "white",
-                      fontWeight: "500",
-                      textAlign: "center",
-                      fontFamily: "Inter-Regular",
-                    }}
-                  >
-                    {loading ? "Cadastrando..." : "Cadastrar"}
-                  </Text>
-                </TouchableOpacity>
-
-                <Text
-                  style={{
-                    textAlign: "center",
-                    marginTop: 20,
-                    fontFamily: "Inter-Regular",
-                  }}
-                >
-                  Já Possui Uma Conta?{" "}
-                  <TouchableOpacity
-                    style={{ marginTop: 4 }}
-                    onPress={() => navigation.navigate("LoginScreen")}
-                  >
-                    <Text
-                      style={{
-                        color: "#E96B35",
-                        textDecorationLine: "underline",
-                        fontFamily: "Inter-Regular",
-                      }}
-                    >
-                      Entre!
-                    </Text>
-                  </TouchableOpacity>
+              {mensagem ? (
+                <Text style={[styles.feedbackText, { color: mensagemColor }]}>
+                  {mensagem}
                 </Text>
+              ) : null}
+
+              <TouchableOpacity
+                style={[styles.submitBtn, loading && styles.submitBtnDisabled]}
+                activeOpacity={0.7}
+                onPress={registerUser}
+                disabled={loading}
+              >
+                <Text style={styles.submitBtnText}>
+                  {loading ? "Cadastrando..." : "Cadastrar"}
+                </Text>
+              </TouchableOpacity>
+
+              <View style={styles.redirectRow}>
+                <Text style={styles.redirectText}>Ja possui uma conta?</Text>
+                <TouchableOpacity
+                  activeOpacity={0.8}
+                  onPress={() => navigation.navigate("LoginScreen")}
+                >
+                  <Text style={styles.redirectLink}>Entre</Text>
+                </TouchableOpacity>
               </View>
             </View>
           </View>
@@ -289,67 +338,165 @@ export default function RegisterScreen() {
 }
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: appTheme.colors.background,
+  },
+  topGlow: {
+    position: "absolute",
+    width: 250,
+    height: 250,
+    borderRadius: appTheme.radius.pill,
+    backgroundColor: "#FFE7D5",
+    top: -90,
+    right: -100,
+  },
+  keyboardContainer: {
+    flex: 1,
+  },
+  scrollContent: {
+    paddingBottom: 36,
+  },
   headerApp: {
-    paddingHorizontal: 30,
-    paddingBottom: 21,
-    marginTop: 16,
+    paddingHorizontal: 24,
+    paddingVertical: 16,
     flexDirection: "row",
     justifyContent: "space-between",
-    borderBottomWidth: 8,
-    borderBottomColor: "#E96B35",
+    alignItems: "center",
+    borderBottomWidth: 1,
+    borderBottomColor: appTheme.colors.divider,
+  },
+  headerBadge: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    backgroundColor: appTheme.colors.primaryTint,
+    borderRadius: appTheme.radius.pill,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+  },
+  headerBadgeText: {
+    color: appTheme.colors.primaryDark,
+    fontSize: 12,
+    fontWeight: "700",
+    fontFamily: appTheme.typography.family,
   },
   loginForm: {
-    marginHorizontal: 18,
-    marginTop: 55,
-    borderWidth: 2,
-    borderColor: "#E96B35",
-    borderRadius: 16,
-  },
-  input: {
-    backgroundColor: "#dfdfdf",
-    borderRadius: 4,
-    marginBottom: 10,
-    paddingLeft: 10,
-    paddingVertical: 8.5,
-    fontFamily: "Inter-Regular",
-  },
-  form: {
-    paddingHorizontal: 15,
-    paddingVertical: 16,
-  },
-  titleForm: {
-    fontSize: 22,
-    textAlign: "center",
-    fontWeight: "600",
-    marginBottom: 5,
-    fontFamily: "Inter-Regular",
-  },
-  boxTitleForm: {
-    borderBottomWidth: 2,
-    borderBottomColor: "#E96B35",
+    marginHorizontal: 20,
+    marginTop: 30,
+    borderWidth: 1,
+    borderColor: appTheme.colors.border,
+    borderRadius: appTheme.radius.lg,
+    backgroundColor: appTheme.colors.surface,
+    padding: 20,
+    ...appTheme.shadows.soft,
   },
   formContent: {
-    paddingTop: 20,
-    paddingBottom: 8,
+    gap: 8,
+  },
+  titleForm: {
+    fontSize: 30,
+    color: appTheme.colors.textPrimary,
+    fontWeight: "800",
+    fontFamily: appTheme.typography.family,
+  },
+  titleAccent: {
+    color: appTheme.colors.primary,
+  },
+  subtitleForm: {
+    marginTop: 10,
+    marginBottom: 20,
+    color: appTheme.colors.textSecondary,
+    lineHeight: 22,
+    fontSize: 15,
+    fontFamily: appTheme.typography.family,
   },
   labelText: {
-    fontSize: 16.5,
-    fontWeight: "500",
-    fontFamily: "Inter-Regular",
+    fontSize: 13,
+    color: appTheme.colors.textSecondary,
+    fontWeight: "700",
+    letterSpacing: 0.2,
+    fontFamily: appTheme.typography.family,
+  },
+  confirmLabel: {
+    marginTop: 2,
+  },
+  inputContainer: {
+    minHeight: 52,
+    backgroundColor: appTheme.colors.surfaceMuted,
+    borderRadius: appTheme.radius.sm,
+    borderWidth: 1,
+    borderColor: appTheme.colors.border,
+    paddingHorizontal: 14,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    marginBottom: 6,
+  },
+  input: {
+    flex: 1,
+    color: appTheme.colors.textPrimary,
+    fontSize: 15,
+    fontFamily: appTheme.typography.family,
+    paddingVertical: 14,
   },
   submitBtn: {
-    backgroundColor: "#E96B35",
-    padding: 10,
-    marginTop: 10,
-    borderRadius: 4,
+    backgroundColor: appTheme.colors.primary,
+    minHeight: 52,
+    borderRadius: appTheme.radius.sm,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 8,
+    ...appTheme.shadows.strong,
   },
   submitBtnDisabled: {
-    backgroundColor: "#f0a882",
+    opacity: 0.7,
+  },
+  submitBtnText: {
+    fontSize: 16,
+    color: appTheme.colors.white,
+    fontWeight: "800",
+    textAlign: "center",
+    fontFamily: appTheme.typography.family,
   },
   strengthText: {
     fontSize: 12,
-    marginTop: -6,
+    marginTop: -2,
     marginBottom: 8,
-    fontFamily: "Inter-Regular",
+    fontFamily: appTheme.typography.family,
+  },
+  confirmationRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    marginTop: -2,
+    marginBottom: 8,
+  },
+  confirmationText: {
+    fontSize: 12,
+    fontFamily: appTheme.typography.family,
+  },
+  feedbackText: {
+    marginBottom: 4,
+    fontWeight: "600",
+    fontFamily: appTheme.typography.family,
+  },
+  redirectRow: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 6,
+    marginTop: 12,
+  },
+  redirectText: {
+    color: appTheme.colors.textSecondary,
+    fontSize: 14,
+    fontFamily: appTheme.typography.family,
+  },
+  redirectLink: {
+    color: appTheme.colors.primaryDark,
+    fontWeight: "700",
+    textDecorationLine: "underline",
+    fontFamily: appTheme.typography.family,
   },
 });

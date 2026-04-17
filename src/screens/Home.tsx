@@ -1,194 +1,226 @@
 import { RootStackParamList } from "@/app/(tabs)";
 import Waves from "@/components/waves";
+import { appTheme } from "@/src/styles/appTheme";
+import { Ionicons } from "@expo/vector-icons";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { Image } from "expo-image";
 import { useNavigation } from "expo-router";
-import React, { useState } from "react";
-import {
-  Dimensions,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import React from "react";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-const { width } = Dimensions.get("window");
 
 type NavProp = StackNavigationProp<RootStackParamList>;
 
 //usar 'npx expo start --tunnel' para iniciar o projeto e nao dar erro ao conectar no expo go
 export default function HomeScreen() {
   const navigation = useNavigation<NavProp>();
-  const [pressedBtn, setPressedBtn] = useState<string | null>(null);
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#FAFAFA" }}>
+    <SafeAreaView style={styles.safeArea}>
+      <View style={styles.topOrb} />
+      <View style={styles.bottomOrb} />
+
       <View style={styles.headerApp}>
         <Image
           style={{ width: 155, height: 30 }}
           source={require("../../assets/images/logoReceitalhada.png")}
         />
+
+        <View style={styles.headerPill}>
+          <Ionicons name="sparkles-outline" size={14} color="#D4550B" />
+          <Text style={styles.headerPillText}>Nova experiência</Text>
+        </View>
       </View>
 
       <View style={styles.mainContainer}>
-        <View style={styles.logoContainer}>
-          <Image
-            style={{ width: 240, height: 40 }}
-            source={require("../../assets/images/logoReceitalhada.png")}
-          />
-          <Text style={styles.tagline}>Suas receitas, suas histórias</Text>
+        <View style={styles.heroCard}>
+          <Text style={styles.heroEyebrow}>RECEITAS COM IDENTIDADE</Text>
+          <Text style={styles.heroTitle}>
+            Cozinhar melhor<Text style={styles.heroTitleAccent}> começa </Text>
+            com organização.
+          </Text>
+          <Text style={styles.heroSubtitle}>
+            Crie receitas, salve suas favoritas e compartilhe momentos com
+            praticidade e estilo.
+          </Text>
+
         </View>
 
         <View style={styles.buttonContainer}>
           <TouchableOpacity
-            style={[
-              styles.btnStart,
-              styles.btnPrimary,
-              pressedBtn === "login" && styles.btnPressed,
-            ]}
+            style={[styles.btnStart, styles.btnPrimary]}
             activeOpacity={0.8}
-            onPress={() => {
-              setPressedBtn("login");
-              setTimeout(() => navigation.navigate("LoginScreen"), 100);
-            }}
+            onPress={() => navigation.navigate("LoginScreen")}
           >
-            <Text style={styles.textBtn}>Entrar</Text>
+            <Text style={styles.textBtn}>Entrar agora</Text>
+            <Ionicons name="arrow-forward" size={18} color="#fff" />
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={[
-              styles.btnStart,
-              styles.btnSecondary,
-              pressedBtn === "register" && styles.btnPressedSecondary,
-            ]}
+            style={[styles.btnStart, styles.btnSecondary]}
             activeOpacity={0.8}
-            onPress={() => {
-              setPressedBtn("register");
-              setTimeout(() => navigation.navigate("RegisterScreen"), 100);
-            }}
+            onPress={() => navigation.navigate("RegisterScreen")}
           >
-            <Text style={styles.textBtnSecondary}>Criar uma Conta</Text>
+            <Text style={styles.textBtnSecondary}>Criar conta gratuita</Text>
+            <Ionicons name="person-add-outline" size={18} color="#D4550B" />
           </TouchableOpacity>
         </View>
       </View>
 
-      <Waves height={120} color="#E96B35" />
+      <View style={styles.waveContainer}>
+        <Waves height={120} color={appTheme.colors.primary} />
+      </View>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: appTheme.colors.background,
+  },
+  topOrb: {
+    position: "absolute",
+    width: 220,
+    height: 220,
+    borderRadius: appTheme.radius.pill,
+    backgroundColor: "#FFE4D0",
+    top: -90,
+    right: -70,
+  },
+  bottomOrb: {
+    position: "absolute",
+    width: 210,
+    height: 210,
+    borderRadius: appTheme.radius.pill,
+    backgroundColor: "#FFEEDF",
+    bottom: 50,
+    left: -110,
+  },
   headerApp: {
     paddingHorizontal: 24,
     paddingVertical: 16,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    backgroundColor: "#FAFAFA",
-    borderBottomWidth: 8,
-    borderBottomColor: "#E96B35",
+    borderBottomWidth: 1,
+    borderBottomColor: appTheme.colors.divider,
   },
-  profileIcon: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    backgroundColor: "#FFF4F0",
-    justifyContent: "center",
+  headerPill: {
+    flexDirection: "row",
     alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.08,
-    shadowRadius: 4,
-    elevation: 3,
+    gap: 6,
+    backgroundColor: appTheme.colors.primaryTint,
+    borderRadius: appTheme.radius.pill,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+  },
+  headerPillText: {
+    color: appTheme.colors.primaryDark,
+    fontSize: 12,
+    fontWeight: "700",
+    fontFamily: appTheme.typography.family,
   },
   mainContainer: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: "space-between",
     paddingHorizontal: 24,
-    position: "relative",
-    overflow: "hidden",
+    paddingVertical: 26,
   },
-  logoContainer: {
+  heroCard: {
+    backgroundColor: appTheme.colors.surface,
+    borderRadius: appTheme.radius.lg,
+    borderWidth: 1,
+    borderColor: appTheme.colors.border,
+    padding: 22,
+    ...appTheme.shadows.soft,
+  },
+  heroEyebrow: {
+    fontSize: 11,
+    letterSpacing: 1.2,
+    color: appTheme.colors.primaryDark,
+    marginBottom: 12,
+    fontWeight: "700",
+    fontFamily: appTheme.typography.family,
+  },
+  heroTitle: {
+    fontSize: 34,
+    lineHeight: 39,
+    color: appTheme.colors.textPrimary,
+    fontWeight: "800",
+    fontFamily: appTheme.typography.family,
+  },
+  heroTitleAccent: {
+    color: appTheme.colors.primary,
+  },
+  heroSubtitle: {
+    fontSize: 15,
+    lineHeight: 23,
+    marginTop: 14,
+    color: appTheme.colors.textSecondary,
+    fontFamily: appTheme.typography.family,
+  },
+  heroTagRow: {
+    flexDirection: "row",
+    gap: 10,
+    marginTop: 20,
+  },
+  heroTag: {
+    flexDirection: "row",
     alignItems: "center",
-    marginBottom: 80,
+    gap: 6,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    backgroundColor: "#E6FFFB",
+    borderWidth: 1,
+    borderColor: "#B7ECE4",
+    borderRadius: appTheme.radius.pill,
   },
-  tagline: {
-    marginTop: 1,
-    fontSize: 16,
-    color: "#A0A0A0",
-    fontWeight: "500",
-    letterSpacing: 0.3,
-    fontFamily: "Inter-Regular",
+  heroTagText: {
+    color: appTheme.colors.accent,
+    fontSize: 12,
+    fontWeight: "700",
+    fontFamily: appTheme.typography.family,
   },
   buttonContainer: {
     width: "100%",
     alignItems: "center",
-    gap: 16,
+    gap: 12,
   },
   btnStart: {
     paddingVertical: 16,
-    borderRadius: 14,
+    paddingHorizontal: 18,
+    borderRadius: appTheme.radius.md,
     width: "100%",
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
-    shadowColor: "#E96B35",
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.2,
-    shadowRadius: 12,
-    elevation: 8,
+    gap: 8,
   },
   btnPrimary: {
-    backgroundColor: "#E96B35",
-  },
-  btnPressed: {
-    backgroundColor: "#D65A2B",
+    backgroundColor: appTheme.colors.primary,
+    ...appTheme.shadows.strong,
   },
   btnSecondary: {
-    backgroundColor: "#FFFFFF",
-    borderWidth: 2,
-    borderColor: "#E96B35",
-  },
-  btnPressedSecondary: {
+    backgroundColor: appTheme.colors.surface,
+    borderWidth: 1.5,
+    borderColor: appTheme.colors.border,
   },
   textBtn: {
     textAlign: "center",
-    fontSize: 18,
-    fontWeight: "700",
+    fontSize: 16,
+    fontWeight: "800",
     color: "white",
-    letterSpacing: 0.5,
-    fontFamily: "Inter-Regular",
+    fontFamily: appTheme.typography.family,
   },
   textBtnSecondary: {
     textAlign: "center",
-    fontSize: 18,
-    fontWeight: "700",
-    color: "#E96B35",
-    letterSpacing: 0.5,
-    fontFamily: "Inter-Regular",
+    fontSize: 16,
+    fontWeight: "800",
+    color: appTheme.colors.primaryDark,
+    fontFamily: appTheme.typography.family,
   },
-  textAccount: {
-    marginTop: 10,
-    textDecorationLine: "underline",
-    fontSize: 14,
-  },
-  decorationCircle1: {
-    position: "absolute",
-    width: 120,
-    height: 120,
-    borderRadius: 60,
-    backgroundColor: "rgba(233, 107, 53, 0.06)",
-    bottom: -40,
-    right: -40,
-  },
-  decorationCircle2: {
-    position: "absolute",
-    width: 90,
-    height: 90,
-    borderRadius: 45,
-    backgroundColor: "rgba(233, 107, 53, 0.04)",
-    top: -30,
-    left: -30,
+  waveContainer: {
+    marginBottom: -4,
   },
 });
