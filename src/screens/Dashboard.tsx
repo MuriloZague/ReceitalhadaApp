@@ -11,6 +11,8 @@ import {
   ActivityIndicator,
   Alert,
   Dimensions,
+  KeyboardAvoidingView,
+  Platform,
   ScrollView,
   StyleSheet,
   Text,
@@ -141,128 +143,144 @@ export default function DashboardScreen() {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#FAFAFA" }}>
-      <View style={styles.header}>
-        <Image
-          style={{ width: 155, height: 30 }}
-          source={require("../../assets/images/logoReceitalhada.png")}
-        />
-      </View>
-
-      <ScrollView
-        style={styles.scrollContainer}
-        contentContainerStyle={styles.scrollContent}
-        showsVerticalScrollIndicator={false}
+      <KeyboardAvoidingView
+        style={styles.keyboardContainer}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
-        <TouchableOpacity
-          onPress={() => navigation.navigate("InitialScreen")}
-          style={styles.backButton}
-        >
-          <Ionicons name="arrow-back" size={16} color="#888" />
-          <Text style={{ fontSize: 16, fontFamily: "Inter-Regular" }}>
-            Voltar
-          </Text>
-        </TouchableOpacity>
-
-        <Text style={styles.pageTitle}>Minha Conta</Text>
-
-        <View style={styles.section}>
+        <View style={styles.header}>
           <Image
-            style={{
-              width: 100,
-              height: 100,
-              alignSelf: "center",
-              marginBottom: 26,
-            }}
-            source={require("../../assets/images/profile-icon.svg")}
+            style={{ width: 155, height: 30 }}
+            source={require("../../assets/images/logoReceitalhada.png")}
           />
+        </View>
 
-          <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>Meus Dados:</Text>
+        <ScrollView
+          style={styles.scrollContainer}
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
+          keyboardDismissMode="on-drag"
+        >
+          <TouchableOpacity
+            onPress={() => navigation.navigate("InitialScreen")}
+            style={styles.backButton}
+          >
+            <Ionicons name="arrow-back" size={16} color="#888" />
+            <Text style={{ fontSize: 16, fontFamily: "Inter-Regular" }}>
+              Voltar
+            </Text>
+          </TouchableOpacity>
+
+          <Text style={styles.pageTitle}>Minha Conta</Text>
+
+          <View style={styles.section}>
+            <Image
+              style={{
+                width: 100,
+                height: 100,
+                alignSelf: "center",
+                marginBottom: 26,
+              }}
+              source={require("../../assets/images/profile-icon.svg")}
+            />
+
+            <View style={styles.sectionHeader}>
+              <Text style={styles.sectionTitle}>Meus Dados:</Text>
+              <TouchableOpacity
+                style={[
+                  styles.editButton,
+                  isSaving && styles.editButtonDisabled,
+                ]}
+                activeOpacity={0.8}
+                onPress={handleToggleEdit}
+                disabled={isSaving}
+              >
+                <Text style={styles.editButtonText}>
+                  {isEditing ? "Cancelar" : "Editar"}
+                </Text>
+              </TouchableOpacity>
+            </View>
+
+            <View style={styles.inputContainer}>
+              <Text style={styles.inputLabel}>Nome Completo</Text>
+              <TextInput
+                style={[styles.input, !isEditing && styles.inputDisabled]}
+                value={isEditing ? name : userData.nome}
+                onChangeText={setName}
+                editable={isEditing && !isSaving}
+              />
+            </View>
+
+            <View style={styles.inputContainer}>
+              <Text style={styles.inputLabel}>Telefone</Text>
+              <TextInput
+                style={[styles.input, !isEditing && styles.inputDisabled]}
+                value={isEditing ? cellphone : userData.telefone}
+                onChangeText={setCellphone}
+                editable={isEditing && !isSaving}
+              />
+            </View>
+
+            {isEditing && (
+              <TouchableOpacity
+                style={[
+                  styles.saveButton,
+                  isSaving && styles.saveButtonDisabled,
+                ]}
+                activeOpacity={0.8}
+                onPress={handleUpdate}
+                disabled={isSaving}
+              >
+                {isSaving ? (
+                  <View style={styles.saveButtonContent}>
+                    <ActivityIndicator size="small" color="#E96B35" />
+                    <Text style={styles.saveButtonText}>Salvando...</Text>
+                  </View>
+                ) : (
+                  <Text style={styles.saveButtonText}>Salvar Alterações</Text>
+                )}
+              </TouchableOpacity>
+            )}
+          </View>
+
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Minhas Receitas:</Text>
+
             <TouchableOpacity
-              style={[styles.editButton, isSaving && styles.editButtonDisabled]}
+              style={styles.actionButton}
               activeOpacity={0.8}
-              onPress={handleToggleEdit}
-              disabled={isSaving}
+              onPress={handleOpenMyRecipes}
             >
-              <Text style={styles.editButtonText}>
-                {isEditing ? "Cancelar" : "Editar"}
+              <Ionicons
+                name="restaurant-outline"
+                size={20}
+                color="#E96B35"
+                style={styles.actionIcon}
+              />
+              <Text style={styles.actionButtonText}>
+                Acessar Receitas Criadas
               </Text>
+              <Ionicons name="chevron-forward" size={18} color="#E96B35" />
             </TouchableOpacity>
           </View>
 
-          <View style={styles.inputContainer}>
-            <Text style={styles.inputLabel}>Nome Completo</Text>
-            <TextInput
-              style={[styles.input, !isEditing && styles.inputDisabled]}
-              value={isEditing ? name : userData.nome}
-              onChangeText={setName}
-              editable={isEditing && !isSaving}
-            />
-          </View>
-
-          <View style={styles.inputContainer}>
-            <Text style={styles.inputLabel}>Telefone</Text>
-            <TextInput
-              style={[styles.input, !isEditing && styles.inputDisabled]}
-              value={isEditing ? cellphone : userData.telefone}
-              onChangeText={setCellphone}
-              editable={isEditing && !isSaving}
-            />
-          </View>
-        </View>
-
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Minhas Receitas:</Text>
-
           <TouchableOpacity
-            style={styles.actionButton}
+            style={styles.logoutButton}
             activeOpacity={0.8}
-            onPress={handleOpenMyRecipes}
+            onPress={handleLogout}
           >
-            <Ionicons
-              name="restaurant-outline"
-              size={20}
-              color="#E96B35"
-              style={styles.actionIcon}
-            />
-            <Text style={styles.actionButtonText}>
-              Acessar Receitas Criadas
-            </Text>
-            <Ionicons name="chevron-forward" size={18} color="#E96B35" />
+            <Text style={styles.logoutButtonText}>Sair da Conta</Text>
           </TouchableOpacity>
-        </View>
-
-        {isEditing && (
-          <TouchableOpacity
-            style={[styles.saveButton, isSaving && styles.saveButtonDisabled]}
-            activeOpacity={0.8}
-            onPress={handleUpdate}
-            disabled={isSaving}
-          >
-            {isSaving ? (
-              <View style={styles.saveButtonContent}>
-                <ActivityIndicator size="small" color="#E96B35" />
-                <Text style={styles.saveButtonText}>Salvando...</Text>
-              </View>
-            ) : (
-              <Text style={styles.saveButtonText}>Salvar Alterações</Text>
-            )}
-          </TouchableOpacity>
-        )}
-
-        <TouchableOpacity
-          style={styles.logoutButton}
-          activeOpacity={0.8}
-          onPress={handleLogout}
-        >
-          <Text style={styles.logoutButtonText}>Sair da Conta</Text>
-        </TouchableOpacity>
-      </ScrollView>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  keyboardContainer: {
+    flex: 1,
+  },
   header: {
     paddingHorizontal: 30,
     paddingVertical: 16,

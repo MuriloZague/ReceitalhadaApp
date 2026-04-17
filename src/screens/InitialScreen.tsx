@@ -271,7 +271,7 @@ const styles = StyleSheet.create({
   cardText: {
     color: "#fff",
     fontWeight: "bold",
-    fontSize: 18,
+    fontSize: 16,
     width: 90,
     textAlign: "center",
     fontFamily: "Inter-Regular",

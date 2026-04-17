@@ -1,15 +1,17 @@
 import { Image } from "expo-image";
-import {  push, onValue, ref } from "firebase/database";
+import { push, onValue, ref } from "firebase/database";
 import React, { useEffect, useState } from "react";
 import {
-    ActivityIndicator,
-    FlatList,
-    StyleSheet,
-    Text,
-    View,
+  ActivityIndicator,
+  FlatList,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { auth, database } from "../services/connectionFirebase";
+import { Ionicons } from "@expo/vector-icons";
 
 type UserRecipe = {
   id: string;
@@ -54,7 +56,7 @@ export default function UserRecipesModalScreen() {
       );
 
       setRecipes(formattedRecipes);
-      console.log(formattedRecipes)
+      console.log(formattedRecipes);
       setIsLoading(false);
     });
 
@@ -64,6 +66,7 @@ export default function UserRecipesModalScreen() {
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
+
         <View style={styles.banner}>
           <Image
             style={styles.logo}
@@ -146,6 +149,12 @@ const styles = StyleSheet.create({
   listContent: {
     paddingBottom: 16,
     gap: 12,
+  },
+  backButton: {
+    marginBottom: 18,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
   },
   recipeCard: {
     backgroundColor: "#FFFFFF",
