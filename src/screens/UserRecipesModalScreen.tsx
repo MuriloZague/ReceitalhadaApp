@@ -1,23 +1,23 @@
+import { appTheme } from "@/src/styles/appTheme";
+import { Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
-import { push, onValue, ref } from "firebase/database";
+import { onValue, ref } from "firebase/database";
 import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
   StyleSheet,
   Text,
-  TouchableOpacity,
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { auth, database } from "../services/connectionFirebase";
-import { Ionicons } from "@expo/vector-icons";
 
 type UserRecipe = {
   id: string;
   nomeReceita: string;
   categoria: string;
-  tempoPreparo: string;
+  tempoPreparo: string | number;
   modoPreparo: string;
   ingredientes: string;
 };
@@ -49,14 +49,13 @@ export default function UserRecipesModalScreen() {
           id,
           nomeReceita: recipe.nomeReceita || "Sem titulo",
           categoria: recipe.categoria || "Sem categoria",
-          tempoPreparo: recipe.tempoPreparo || "-",
+          tempoPreparo: String(recipe.tempoPreparo || "-"),
           modoPreparo: recipe.modoPreparo || "-",
           ingredientes: recipe.ingredientes || "-",
         }),
       );
 
       setRecipes(formattedRecipes);
-      console.log(formattedRecipes);
       setIsLoading(false);
     });
 
@@ -65,8 +64,9 @@ export default function UserRecipesModalScreen() {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <View style={styles.container}>
+      <View style={styles.topGlow} />
 
+      <View style={styles.container}>
         <View style={styles.banner}>
           <Image
             style={styles.logo}
@@ -75,15 +75,31 @@ export default function UserRecipesModalScreen() {
           <Text style={styles.bannerText}>
             Aqui aparecem as receitas criadas por você
           </Text>
+
+          <View style={styles.bannerInfoPill}>
+            <Ionicons
+              name="document-text-outline"
+              size={13}
+              color={appTheme.colors.primaryDark}
+            />
+            <Text style={styles.bannerInfoText}>
+              {recipes.length} receita(s) registrada(s)
+            </Text>
+          </View>
         </View>
 
         {isLoading ? (
           <View style={styles.centerState}>
-            <ActivityIndicator size="small" color="#E96B35" />
+            <ActivityIndicator size="small" color={appTheme.colors.primary} />
             <Text style={styles.stateText}>Carregando receitas...</Text>
           </View>
         ) : recipes.length === 0 ? (
           <View style={styles.centerState}>
+            <Ionicons
+              name="restaurant-outline"
+              size={30}
+              color={appTheme.colors.textMuted}
+            />
             <Text style={styles.emptyTitle}>Nenhuma receita criada ainda</Text>
             <Text style={styles.emptyText}>
               Use a aba Receita para cadastrar sua primeira receita.
@@ -97,14 +113,34 @@ export default function UserRecipesModalScreen() {
             renderItem={({ item }) => (
               <View style={styles.recipeCard}>
                 <Text style={styles.recipeTitle}>{item.nomeReceita}</Text>
-                <Text style={styles.recipeMeta}>
-                  Categoria: {item.categoria}
-                </Text>
-                <Text style={styles.recipeMeta}>
-                  Tempo de preparo: {item.tempoPreparo} min
-                </Text>
-                <Text style={styles.recipeMeta}>
-                  Ingredientes: {item.ingredientes} min
+
+                <View style={styles.metaRow}>
+                  <View style={styles.metaPill}>
+                    <Ionicons
+                      name="layers-outline"
+                      size={13}
+                      color={appTheme.colors.primaryDark}
+                    />
+                    <Text style={styles.metaPillText}>{item.categoria}</Text>
+                  </View>
+                  <View style={styles.metaPill}>
+                    <Ionicons
+                      name="time-outline"
+                      size={13}
+                      color={appTheme.colors.primaryDark}
+                    />
+                    <Text style={styles.metaPillText}>
+                      {item.tempoPreparo} min
+                    </Text>
+                  </View>
+                </View>
+
+                <Text style={styles.recipeMetaLabel}>Ingredientes</Text>
+                <Text style={styles.recipeMeta}>{item.ingredientes}</Text>
+
+                <Text style={styles.recipeMetaLabel}>Modo de preparo</Text>
+                <Text numberOfLines={3} style={styles.recipeMeta}>
+                  {item.modoPreparo}
                 </Text>
               </View>
             )}
@@ -118,22 +154,32 @@ export default function UserRecipesModalScreen() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: "#FAFAFA",
+    backgroundColor: appTheme.colors.background,
+  },
+  topGlow: {
+    position: "absolute",
+    width: 220,
+    height: 220,
+    borderRadius: appTheme.radius.pill,
+    backgroundColor: "#FFE7D5",
+    top: -90,
+    left: -90,
   },
   container: {
     flex: 1,
     paddingHorizontal: 20,
-    paddingTop: 14,
-    paddingBottom: 20,
+    paddingTop: 12,
+    paddingBottom: 22,
   },
   banner: {
-    borderWidth: 1.5,
-    borderColor: "#E96B35",
-    borderRadius: 14,
-    backgroundColor: "#FFF7F2",
+    borderWidth: 1,
+    borderColor: appTheme.colors.border,
+    borderRadius: appTheme.radius.lg,
+    backgroundColor: appTheme.colors.surface,
     paddingHorizontal: 14,
     paddingVertical: 14,
     marginBottom: 16,
+    ...appTheme.shadows.soft,
   },
   logo: {
     width: 130,
@@ -141,71 +187,112 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   bannerText: {
-    color: "#A0552B",
+    color: appTheme.colors.textSecondary,
     fontSize: 13,
     lineHeight: 18,
-    fontFamily: "Inter-Regular",
+    marginBottom: 12,
+    fontFamily: appTheme.typography.family,
   },
-  listContent: {
-    paddingBottom: 16,
-    gap: 12,
-  },
-  backButton: {
-    marginBottom: 18,
+  bannerInfoPill: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 4,
+    gap: 6,
+    alignSelf: "flex-start",
+    backgroundColor: appTheme.colors.primaryTint,
+    borderRadius: appTheme.radius.pill,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+  },
+  bannerInfoText: {
+    color: appTheme.colors.primaryDark,
+    fontWeight: "700",
+    fontSize: 12,
+    fontFamily: appTheme.typography.family,
+  },
+  listContent: {
+    paddingBottom: 18,
+    gap: 12,
   },
   recipeCard: {
-    backgroundColor: "#FFFFFF",
+    backgroundColor: appTheme.colors.surface,
     borderWidth: 1,
-    borderColor: "#EED0C1",
-    borderRadius: 12,
+    borderColor: appTheme.colors.border,
+    borderRadius: appTheme.radius.md,
     paddingHorizontal: 14,
-    paddingVertical: 12,
-    shadowColor: "#E96B35",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.08,
-    shadowRadius: 4,
-    elevation: 2,
+    paddingVertical: 14,
+    ...appTheme.shadows.soft,
   },
   recipeTitle: {
-    fontSize: 17,
-    color: "#1A1A1A",
+    fontSize: 19,
+    color: appTheme.colors.textPrimary,
+    fontWeight: "800",
+    marginBottom: 10,
+    fontFamily: appTheme.typography.family,
+  },
+  metaRow: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 8,
+    marginBottom: 10,
+  },
+  metaPill: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 5,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: appTheme.radius.pill,
+    backgroundColor: appTheme.colors.surfaceMuted,
+    borderWidth: 1,
+    borderColor: appTheme.colors.border,
+  },
+  metaPillText: {
+    color: appTheme.colors.primaryDark,
+    fontSize: 12,
     fontWeight: "700",
-    marginBottom: 6,
-    fontFamily: "Inter-Regular",
+    fontFamily: appTheme.typography.family,
+  },
+  recipeMetaLabel: {
+    fontSize: 12,
+    color: appTheme.colors.textMuted,
+    marginBottom: 4,
+    fontWeight: "700",
+    textTransform: "uppercase",
+    letterSpacing: 0.4,
+    fontFamily: appTheme.typography.family,
   },
   recipeMeta: {
     fontSize: 14,
-    color: "#666",
-    marginBottom: 2,
-    fontFamily: "Inter-Regular",
+    color: appTheme.colors.textSecondary,
+    marginBottom: 10,
+    lineHeight: 20,
+    fontFamily: appTheme.typography.family,
   },
   centerState: {
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    paddingHorizontal: 20,
+    paddingHorizontal: 24,
+    gap: 8,
   },
   stateText: {
-    marginTop: 8,
     fontSize: 14,
-    color: "#666",
-    fontFamily: "Inter-Regular",
+    color: appTheme.colors.textSecondary,
+    fontFamily: appTheme.typography.family,
   },
   emptyTitle: {
     fontSize: 18,
-    color: "#1A1A1A",
-    fontWeight: "700",
+    color: appTheme.colors.textPrimary,
+    fontWeight: "800",
     marginBottom: 6,
     textAlign: "center",
-    fontFamily: "Inter-Regular",
+    fontFamily: appTheme.typography.family,
   },
   emptyText: {
     fontSize: 14,
-    color: "#666",
+    color: appTheme.colors.textSecondary,
     textAlign: "center",
-    fontFamily: "Inter-Regular",
+    lineHeight: 20,
+    fontFamily: appTheme.typography.family,
   },
 });

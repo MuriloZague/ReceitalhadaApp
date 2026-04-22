@@ -1,18 +1,20 @@
 import { AppTabParamList } from "@/app/(tabs)";
+import { appTheme } from "@/src/styles/appTheme";
+import { Ionicons } from "@expo/vector-icons";
 import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
 import { Image } from "expo-image";
 import { useNavigation } from "expo-router";
 import React, { useState } from "react";
 import {
-  Alert,
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
+    Alert,
+    KeyboardAvoidingView,
+    Platform,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { auth } from "../services/connectionFirebase";
@@ -63,129 +65,141 @@ export default function CreateProductScreen() {
 
     setIsSubmitting(true);
 
-    //try {
-    //  const recipesRef = ref(database, `users/${user.uid}/recipes`);
+    // Estrutura mantida como mock ate a integracao final com o Firebase.
+    setTimeout(() => {
+      setIsSubmitting(false);
+      Alert.alert("Sucesso", "Receita cadastrada com sucesso!");
+      setRecipeName("");
+      setCategory("");
+      setPrepTime("");
+      setIngredients("");
+      setInstructions("");
+    }, 800);
+  };
 
-    //  await push(recipesRef, {
-    //    nomeReceita: finalRecipeName,
-    //    categoria: finalCategory,
-    //    tempoPreparo: prepTimeValue,
-    //    porcoes: servingsValue,
-    //    ingredientes: finalIngredients,
-    //    modoPreparo: finalInstructions,
-    //    createdAt: new Date().toISOString(),
-    //  });
+  return (
+    <SafeAreaView style={styles.safeArea}>
+      <View style={styles.topGlow} />
 
-    //  Alert.alert("Sucesso", "Receita cadastrada com sucesso!");
+      <View style={styles.headerApp}>
+        <Image
+          style={{ width: 155, height: 30 }}
+          source={require("../../assets/images/logoReceitalhada.png")}
+        />
 
-      // limpa os campos
-    //  setRecipeName("");
-    //  setCategory("");
-    //  setPrepTime("");
-    //  setIngredients("");
-    //  setInstructions("");
-    //} catch (error) {
-    //  console.log(error);
-    //  Alert.alert("Erro", "Não foi possível salvar a receita.");
-    //} finally {
-    //  setIsSubmitting(false);
-    //}
-  //};
+        <View style={styles.headerBadge}>
+          <Ionicons name="sparkles-outline" size={14} color="#D4550B" />
+          <Text style={styles.headerBadgeText}>Criar</Text>
+        </View>
+      </View>
 
-  setTimeout(() => {
-    setIsSubmitting(false);
-    Alert.alert("Sucesso", "Receita cadastrada com sucesso!");
-    setRecipeName("");
-    setCategory("");
-    setPrepTime("");
-    setIngredients("");
-    setInstructions("");
-  }, 800);
-};
-
-return (
-  <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
-    <View style={styles.headerApp}>
-      <Image
-        style={{ width: 155, height: 30 }}
-        source={require("../../assets/images/logoReceitalhada.png")}
-      />
-    </View>
-
-    <KeyboardAvoidingView
-      style={styles.keyboardContainer}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-    >
-      <ScrollView
-        contentContainerStyle={styles.scrollContent}
-        keyboardShouldPersistTaps="handled"
-        showsVerticalScrollIndicator={false}
+      <KeyboardAvoidingView
+        style={styles.keyboardContainer}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
-        <View style={styles.formContainer}>
-          <View style={styles.form}>
-            <View style={styles.boxTitleForm}>
-              <Text style={styles.titleForm}>
-                Nova <Text style={{ color: "#E96B35" }}>Receita</Text>
-              </Text>
-            </View>
+        <ScrollView
+          contentContainerStyle={styles.scrollContent}
+          keyboardShouldPersistTaps="handled"
+          keyboardDismissMode="on-drag"
+          showsVerticalScrollIndicator={false}
+        >
+          <View style={styles.formContainer}>
+            <Text style={styles.titleForm}>
+              Publique sua
+              <Text style={styles.titleAccent}> nova receita</Text>
+            </Text>
+            <Text style={styles.subtitleForm}>
+              Compartilhe ingredientes, preparo e tempo para inspirar outras
+              pessoas na cozinha.
+            </Text>
 
             <View style={styles.formContent}>
               <Text style={styles.labelText}>Nome da Receita</Text>
-              <TextInput
-                style={styles.input}
-                placeholder="Ex: Bolo de Cenoura"
-                value={recipeName}
-                onChangeText={setRecipeName}
-                editable={!isSubmitting}
-              />
+              <View style={styles.inputContainer}>
+                <Ionicons
+                  name="restaurant-outline"
+                  size={18}
+                  color={appTheme.colors.textMuted}
+                />
+                <TextInput
+                  style={styles.input}
+                  placeholder="Ex: Bolo de Cenoura"
+                  placeholderTextColor={appTheme.colors.textMuted}
+                  value={recipeName}
+                  onChangeText={setRecipeName}
+                  editable={!isSubmitting}
+                />
+              </View>
 
               <Text style={styles.labelText}>Categoria</Text>
-              <TextInput
-                style={styles.input}
-                placeholder="Ex: Doces"
-                value={category}
-                onChangeText={setCategory}
-                editable={!isSubmitting}
-              />
+              <View style={styles.inputContainer}>
+                <Ionicons
+                  name="grid-outline"
+                  size={18}
+                  color={appTheme.colors.textMuted}
+                />
+                <TextInput
+                  style={styles.input}
+                  placeholder="Ex: Doces"
+                  placeholderTextColor={appTheme.colors.textMuted}
+                  value={category}
+                  onChangeText={setCategory}
+                  editable={!isSubmitting}
+                />
+              </View>
 
               <Text style={styles.labelText}>Tempo de Preparo (min)</Text>
-              <TextInput
-                style={styles.input}
-                placeholder="Ex: 45"
-                value={prepTime}
-                onChangeText={setPrepTime}
-                keyboardType="number-pad"
-                editable={!isSubmitting}
-              />
+              <View style={styles.inputContainer}>
+                <Ionicons
+                  name="time-outline"
+                  size={18}
+                  color={appTheme.colors.textMuted}
+                />
+                <TextInput
+                  style={styles.input}
+                  placeholder="Ex: 45"
+                  placeholderTextColor={appTheme.colors.textMuted}
+                  value={prepTime}
+                  onChangeText={setPrepTime}
+                  keyboardType="number-pad"
+                  editable={!isSubmitting}
+                />
+              </View>
 
               <Text style={styles.labelText}>Ingredientes</Text>
-              <TextInput
-                style={[styles.input, styles.textArea]}
-                placeholder="Ex: 2 cenouras, 3 ovos, 2 xícaras de farinha..."
-                value={ingredients}
-                onChangeText={setIngredients}
-                editable={!isSubmitting}
-                multiline
-                textAlignVertical="top"
-              />
+              <View style={[styles.inputContainer, styles.textAreaContainer]}>
+                <TextInput
+                  style={[styles.input, styles.textArea]}
+                  placeholder="Ex: 2 cenouras, 3 ovos, 2 xicaras de farinha..."
+                  placeholderTextColor={appTheme.colors.textMuted}
+                  value={ingredients}
+                  onChangeText={setIngredients}
+                  editable={!isSubmitting}
+                  multiline
+                  textAlignVertical="top"
+                />
+              </View>
 
               <Text style={styles.labelText}>Modo de Preparo</Text>
-              <TextInput
-                style={[styles.input, styles.textArea]}
-                placeholder="Descreva o passo a passo da receita"
-                value={instructions}
-                onChangeText={setInstructions}
-                editable={!isSubmitting}
-                multiline
-                textAlignVertical="top"
-              />
+              <View style={[styles.inputContainer, styles.textAreaContainer]}>
+                <TextInput
+                  style={[styles.input, styles.textArea]}
+                  placeholder="Descreva o passo a passo da receita"
+                  placeholderTextColor={appTheme.colors.textMuted}
+                  value={instructions}
+                  onChangeText={setInstructions}
+                  editable={!isSubmitting}
+                  multiline
+                  textAlignVertical="top"
+                />
+              </View>
 
               <TouchableOpacity
                 style={[
                   styles.submitBtn,
                   isSubmitting && styles.submitBtnDisabled,
                 ]}
-                activeOpacity={0.7}
+                activeOpacity={0.8}
                 onPress={handleCreateRecipe}
                 disabled={isSubmitting}
               >
@@ -196,102 +210,156 @@ return (
 
               <TouchableOpacity
                 style={styles.goToHomeButton}
-                activeOpacity={0.7}
+                activeOpacity={0.8}
                 onPress={() => navigation.navigate("InitialScreen")}
               >
-                <Text style={styles.goToHomeText}>Voltar para Inicio</Text>
+                <Text style={styles.goToHomeText}>Voltar para inicio</Text>
               </TouchableOpacity>
             </View>
           </View>
-        </View>
-      </ScrollView>
-    </KeyboardAvoidingView>
-  </SafeAreaView>
-);
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
+  );
 }
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: appTheme.colors.background,
+  },
+  topGlow: {
+    position: "absolute",
+    width: 240,
+    height: 240,
+    borderRadius: appTheme.radius.pill,
+    backgroundColor: "#FFE7D5",
+    top: -115,
+    left: -100,
+  },
   keyboardContainer: {
     flex: 1,
   },
   scrollContent: {
-    paddingBottom: 32,
+    paddingBottom: 110,
   },
   headerApp: {
-    paddingHorizontal: 30,
-    paddingBottom: 21,
-    marginTop: 16,
+    paddingHorizontal: 24,
+    paddingVertical: 16,
     flexDirection: "row",
     justifyContent: "space-between",
-    borderBottomWidth: 8,
-    borderBottomColor: "#E96B35",
+    alignItems: "center",
+    borderBottomWidth: 1,
+    borderBottomColor: appTheme.colors.divider,
+  },
+  headerBadge: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    backgroundColor: appTheme.colors.primaryTint,
+    borderRadius: appTheme.radius.pill,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+  },
+  headerBadgeText: {
+    color: appTheme.colors.primaryDark,
+    fontSize: 12,
+    fontWeight: "700",
+    fontFamily: appTheme.typography.family,
   },
   formContainer: {
-    marginHorizontal: 18,
-    marginTop: 40,
-    borderWidth: 2,
-    borderColor: "#E96B35",
-    borderRadius: 16,
-  },
-  form: {
-    paddingHorizontal: 15,
-    paddingVertical: 16,
-  },
-  boxTitleForm: {
-    borderBottomWidth: 2,
-    borderBottomColor: "#E96B35",
+    marginHorizontal: 20,
+    marginTop: 28,
+    borderWidth: 1,
+    borderColor: appTheme.colors.border,
+    borderRadius: appTheme.radius.lg,
+    backgroundColor: appTheme.colors.surface,
+    padding: 20,
+    ...appTheme.shadows.soft,
   },
   titleForm: {
-    fontSize: 22,
-    textAlign: "center",
-    fontWeight: "600",
-    marginBottom: 5,
-    fontFamily: "Inter-Regular",
+    fontSize: 29,
+    color: appTheme.colors.textPrimary,
+    fontWeight: "800",
+    fontFamily: appTheme.typography.family,
+  },
+  titleAccent: {
+    color: appTheme.colors.primary,
+  },
+  subtitleForm: {
+    marginTop: 10,
+    marginBottom: 20,
+    color: appTheme.colors.textSecondary,
+    lineHeight: 22,
+    fontSize: 15,
+    fontFamily: appTheme.typography.family,
   },
   formContent: {
-    paddingTop: 20,
-    paddingBottom: 8,
+    gap: 8,
   },
   labelText: {
-    fontSize: 16.5,
-    fontWeight: "500",
-    fontFamily: "Inter-Regular",
+    fontSize: 13,
+    color: appTheme.colors.textSecondary,
+    fontWeight: "700",
+    letterSpacing: 0.2,
+    fontFamily: appTheme.typography.family,
+  },
+  inputContainer: {
+    minHeight: 52,
+    backgroundColor: appTheme.colors.surfaceMuted,
+    borderRadius: appTheme.radius.sm,
+    borderWidth: 1,
+    borderColor: appTheme.colors.border,
+    paddingHorizontal: 14,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    marginBottom: 6,
   },
   input: {
-    backgroundColor: "#dfdfdf",
-    borderRadius: 4,
-    marginBottom: 12,
-    paddingLeft: 10,
-    paddingVertical: 8.5,
-    fontFamily: "Inter-Regular",
+    flex: 1,
+    color: appTheme.colors.textPrimary,
+    fontSize: 15,
+    fontFamily: appTheme.typography.family,
+    paddingVertical: 14,
+  },
+  textAreaContainer: {
+    minHeight: 130,
+    alignItems: "flex-start",
+    paddingTop: 8,
   },
   textArea: {
-    minHeight: 100,
-    paddingTop: 10,
+    minHeight: 110,
+    textAlignVertical: "top",
+    paddingTop: 8,
   },
   submitBtn: {
-    backgroundColor: "#E96B35",
-    padding: 10,
-    marginTop: 12,
-    borderRadius: 4,
+    backgroundColor: appTheme.colors.primary,
+    minHeight: 52,
+    borderRadius: appTheme.radius.sm,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 10,
+    ...appTheme.shadows.strong,
   },
   submitBtnDisabled: {
-    backgroundColor: "#f0a882",
+    opacity: 0.75,
   },
   submitBtnText: {
-    fontSize: 17,
-    color: "white",
-    fontWeight: "500",
+    fontSize: 16,
+    color: appTheme.colors.white,
+    fontWeight: "800",
     textAlign: "center",
-    fontFamily: "Inter-Regular",
+    fontFamily: appTheme.typography.family,
   },
   goToHomeButton: {
-    marginTop: 14,
+    marginTop: 10,
     alignItems: "center",
   },
   goToHomeText: {
-    color: "#E96B35",
+    color: appTheme.colors.primaryDark,
     textDecorationLine: "underline",
-    fontFamily: "Inter-Regular",
+    fontWeight: "700",
+    fontFamily: appTheme.typography.family,
   },
 });

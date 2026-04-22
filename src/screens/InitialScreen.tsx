@@ -1,4 +1,5 @@
 import { AppTabParamList } from "@/app/(tabs)";
+import { appTheme } from "@/src/styles/appTheme";
 import { Ionicons } from "@expo/vector-icons";
 import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
 import { Image } from "expo-image";
@@ -6,14 +7,14 @@ import { useNavigation } from "expo-router";
 import React, { useState } from "react";
 
 import {
-  FlatList,
-  ImageBackground,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
+    FlatList,
+    ImageBackground,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 //import Recipes from "@/components/recipes";
@@ -23,7 +24,6 @@ type NavProp = BottomTabNavigationProp<AppTabParamList, "InitialScreen">;
 export default function Home() {
   const navigation = useNavigation<NavProp>();
 
-  //const [text, setText] = useState("");
   const [focus, setFocus] = useState(false);
 
   const categorias = [
@@ -94,8 +94,13 @@ export default function Home() {
   ];
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
-      <ScrollView showsVerticalScrollIndicator={false}>
+    <SafeAreaView style={styles.safeArea}>
+      <View style={styles.topGlow} />
+
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.scrollContent}
+      >
         <View style={styles.headerApp}>
           <Image
             style={{ width: 155, height: 30 }}
@@ -103,33 +108,37 @@ export default function Home() {
           />
           <TouchableOpacity
             onPress={() => navigation.navigate("DashBoardScreen")}
+            style={styles.profileButton}
+            activeOpacity={0.8}
           >
-            <Image
-              style={{ width: 35, height: 35 }}
-              source={require("../../assets/images/profile-icon.svg")}
+            <Ionicons
+              name="person-circle-outline"
+              size={27}
+              color={appTheme.colors.primaryDark}
             />
           </TouchableOpacity>
         </View>
 
         <View style={styles.titleContainer}>
+          <Text style={styles.eyebrow}>NAVEGUE POR SABORES</Text>
           <Text style={styles.title}>
-            Encontre A{" "}
-            <Text style={{ color: "#E96B35", fontWeight: 700 }}>
-              Melhor Receita
-            </Text>{" "}
-            Para A Sua Fome
+            Encontre receitas para qualquer momento
           </Text>
+          <Text style={styles.subtitle}>
+            Descubra pratos, salve ideias e monte seu caderno culinario.
+          </Text>
+
           <View style={styles.inputWrapper}>
             <Ionicons
               name="search"
               size={20}
-              color="#888"
+              color={appTheme.colors.textMuted}
               style={styles.searchIcon}
             />
             <TextInput
               style={[styles.input, focus && styles.inputFocused]}
               placeholder="Procure por uma receita"
-              placeholderTextColor="#999999"
+              placeholderTextColor={appTheme.colors.textMuted}
               keyboardType="default"
               onFocus={() => setFocus(true)}
               onBlur={() => setFocus(false)}
@@ -138,18 +147,19 @@ export default function Home() {
         </View>
 
         <View style={styles.cardView}>
+          <Text style={styles.sectionLabel}>Categorias</Text>
           <FlatList
             data={categorias}
             horizontal
             showsHorizontalScrollIndicator={false}
             keyExtractor={(item) => item.id}
-            contentContainerStyle={{ paddingHorizontal: 10, gap: 12 }}
+            contentContainerStyle={styles.categoryList}
             renderItem={({ item }) => (
               <TouchableOpacity activeOpacity={0.8} style={styles.cardShadow}>
                 <ImageBackground
                   source={item.imagem}
                   style={styles.card}
-                  imageStyle={{ borderRadius: 18 }}
+                  imageStyle={{ borderRadius: appTheme.radius.md }}
                 >
                   <View style={styles.overlay} />
                   <Text style={styles.cardText}>{item.nome}</Text>
@@ -158,33 +168,44 @@ export default function Home() {
             )}
           />
         </View>
-        <Text style={styles.minorTitle}>
-          Principais <Text style={{ color: "#E96B35" }}>Receitas</Text>
-        </Text>
+
+        <View style={styles.recipeHeader}>
+          <Text style={styles.minorTitle}>Receitas em alta</Text>
+          <Text style={styles.recipeCounter}>{receitas.length} resultados</Text>
+        </View>
+
         {receitas.map((item) => (
           <TouchableOpacity
             key={item.id}
-            style={[
-              styles.receitaCard,
-              { elevation: 0, shadowColor: "transparent" },
-            ]}
-            activeOpacity={1}
+            style={styles.receitaCard}
+            activeOpacity={0.9}
           >
-            <Text style={styles.receitaNome}>{item.nome}</Text>
-            <TouchableOpacity activeOpacity={0.75}>
-              <Image source={item.imagem} style={styles.receitaImagem} />
-            </TouchableOpacity>
-            <View style={styles.receitaFooter}>
-              <Image source={item.autorFoto} style={styles.autorAvatar} />
-              <View style={styles.receitaInfo}>
-                <Text style={styles.autorNome}>{item.autor}</Text>
-                <Text style={styles.receitaData}>{item.data}</Text>
-                <View style={styles.favoritosRow}>
-                  <Ionicons name="star" size={14} color="#F5A623" />
-                  <Text style={styles.favoritosText}>
-                    {item.favoritos} favoritos
-                  </Text>
+            <Image source={item.imagem} style={styles.receitaImagem} />
+
+            <View style={styles.receitaBody}>
+              <View style={styles.recipeBadgeRow}>
+                <View style={styles.categoryPill}>
+                  <Text style={styles.categoryPillText}>{item.autor}</Text>
                 </View>
+                <View style={styles.ratingPill}>
+                  <Ionicons name="star" size={14} color="#F59E0B" />
+                  <Text style={styles.ratingText}>{item.favoritos}</Text>
+                </View>
+              </View>
+
+              <Text style={styles.receitaNome}>{item.nome}</Text>
+
+              <View style={styles.receitaFooter}>
+                <Image source={item.autorFoto} style={styles.autorAvatar} />
+                <View style={styles.receitaInfo}>
+                  <Text style={styles.autorNome}>{item.autor}</Text>
+                  <Text style={styles.receitaData}>{item.data}</Text>
+                </View>
+                <Ionicons
+                  name="bookmark-outline"
+                  size={18}
+                  color={appTheme.colors.primaryDark}
+                />
               </View>
             </View>
           </TouchableOpacity>
@@ -195,38 +216,80 @@ export default function Home() {
 }
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: appTheme.colors.background,
+  },
+  topGlow: {
+    position: "absolute",
+    width: 240,
+    height: 240,
+    borderRadius: appTheme.radius.pill,
+    backgroundColor: "#FFE7D5",
+    top: -110,
+    right: -90,
+  },
+  scrollContent: {
+    paddingBottom: 120,
+  },
   headerApp: {
-    paddingHorizontal: 30,
-    paddingBottom: 16,
-    marginTop: 16,
+    paddingHorizontal: 24,
+    paddingBottom: 14,
+    paddingTop: 8,
     flexDirection: "row",
     justifyContent: "space-between",
-    borderBottomWidth: 8,
-    borderBottomColor: "#E96B35",
+    alignItems: "center",
+    borderBottomWidth: 1,
+    borderBottomColor: appTheme.colors.divider,
+  },
+  profileButton: {
+    width: 42,
+    height: 42,
+    borderRadius: appTheme.radius.pill,
+    backgroundColor: appTheme.colors.primaryTint,
+    justifyContent: "center",
+    alignItems: "center",
   },
   titleContainer: {
     paddingHorizontal: 24,
-    padding: 20,
+    paddingTop: 20,
+  },
+  eyebrow: {
+    fontSize: 11,
+    letterSpacing: 1.2,
+    color: appTheme.colors.primaryDark,
+    marginBottom: 10,
+    fontWeight: "700",
+    fontFamily: appTheme.typography.family,
   },
   title: {
-    fontSize: 28,
-    textAlign: "center",
-    fontWeight: "600",
-    paddingHorizontal: 20,
-    fontFamily: "Inter-Regular",
-    marginVertical: 4,
+    fontSize: 33,
+    lineHeight: 39,
+    color: appTheme.colors.textPrimary,
+    fontWeight: "800",
+    fontFamily: appTheme.typography.family,
+  },
+  subtitle: {
+    marginTop: 12,
+    color: appTheme.colors.textSecondary,
+    fontSize: 15,
+    lineHeight: 22,
+    fontFamily: appTheme.typography.family,
   },
   minorTitle: {
     fontSize: 24,
-    textAlign: "center",
+    color: appTheme.colors.textPrimary,
+    fontWeight: "800",
+    fontFamily: appTheme.typography.family,
+  },
+  recipeCounter: {
+    color: appTheme.colors.textSecondary,
+    fontSize: 13,
     fontWeight: "600",
-    paddingHorizontal: 20,
-    marginTop: 32,
-    marginBottom: 18,
-    fontFamily: "Inter-Regular",
+    fontFamily: appTheme.typography.family,
   },
   inputWrapper: {
-    marginTop: 25,
+    marginTop: 22,
     position: "relative",
     justifyContent: "center",
   },
@@ -236,121 +299,154 @@ const styles = StyleSheet.create({
     zIndex: 1,
   },
   input: {
-    height: 45,
-    backgroundColor: "#dfdfdf",
+    height: 50,
+    backgroundColor: appTheme.colors.surfaceMuted,
     paddingLeft: 42,
     paddingRight: 16,
-    borderRadius: 100,
+    borderRadius: appTheme.radius.pill,
     fontSize: 15,
-    borderWidth: 2,
-    borderColor: "#dfdfdf",
-    fontFamily: "Inter-Regular",
+    borderWidth: 1,
+    borderColor: appTheme.colors.border,
+    color: appTheme.colors.textPrimary,
+    fontFamily: appTheme.typography.family,
   },
   inputFocused: {
-    borderColor: "#E96B35",
-    borderWidth: 2,
+    borderColor: appTheme.colors.primary,
+    borderWidth: 1.5,
   },
   cardView: {
-    marginTop: 6,
+    marginTop: 22,
+  },
+  sectionLabel: {
+    marginBottom: 12,
+    marginLeft: 24,
+    fontSize: 18,
+    color: appTheme.colors.textPrimary,
+    fontWeight: "700",
+    fontFamily: appTheme.typography.family,
+  },
+  categoryList: {
+    paddingHorizontal: 24,
+    gap: 12,
   },
   cardShadow: {
-    borderRadius: 18,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 6,
-    elevation: 6,
+    borderRadius: appTheme.radius.md,
+    ...appTheme.shadows.soft,
   },
   card: {
-    width: 160,
-    height: 80,
-    justifyContent: "center",
-    alignItems: "center",
+    width: 174,
+    height: 102,
+    justifyContent: "flex-end",
     overflow: "hidden",
+    borderRadius: appTheme.radius.md,
+    padding: 12,
   },
   cardText: {
-    color: "#fff",
-    fontWeight: "bold",
-    fontSize: 16,
-    width: 90,
-    textAlign: "center",
-    fontFamily: "Inter-Regular",
+    color: appTheme.colors.white,
+    fontWeight: "800",
+    fontSize: 14,
+    lineHeight: 18,
+    width: "90%",
+    fontFamily: appTheme.typography.family,
   },
   overlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-    borderRadius: 18,
+    backgroundColor: "rgba(35, 27, 22, 0.38)",
+    borderRadius: appTheme.radius.md,
+  },
+  recipeHeader: {
+    marginTop: 30,
+    marginBottom: 14,
+    marginHorizontal: 24,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
   receitaCard: {
     marginHorizontal: 24,
-    marginBottom: 24,
-    backgroundColor: "#fff",
-    borderRadius: 16,
-    shadowRadius: 8,
-    elevation: 4,
-    paddingBottom: 14,
-  },
-  receitaNome: {
-    fontSize: 19,
-    fontWeight: "900",
-    textAlign: "center",
-    paddingHorizontal: 16,
-    paddingTop: 14,
-    paddingBottom: 10,
+    marginBottom: 16,
+    backgroundColor: appTheme.colors.surface,
+    borderRadius: appTheme.radius.lg,
     borderWidth: 1,
-    borderColor: "#dfdfdf",
-    borderTopLeftRadius: 16,
-    borderTopRightRadius: 16,
-    backgroundColor: "#ededed52",
-    fontFamily: "Inter-Regular",
+    borderColor: appTheme.colors.border,
+    overflow: "hidden",
+    ...appTheme.shadows.soft,
   },
   receitaImagem: {
     width: "100%",
-    height: 185,
+    height: 190,
+  },
+  receitaBody: {
+    padding: 14,
+  },
+  recipeBadgeRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 12,
+  },
+  categoryPill: {
+    backgroundColor: appTheme.colors.surfaceMuted,
+    borderWidth: 1,
+    borderColor: appTheme.colors.border,
+    borderRadius: appTheme.radius.pill,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+  },
+  categoryPillText: {
+    color: appTheme.colors.primaryDark,
+    fontSize: 12,
+    fontWeight: "700",
+    fontFamily: appTheme.typography.family,
+  },
+  ratingPill: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+    backgroundColor: "#FFF8E1",
+    borderRadius: appTheme.radius.pill,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+  },
+  ratingText: {
+    color: "#8A5200",
+    fontWeight: "700",
+    fontSize: 12,
+    fontFamily: appTheme.typography.family,
+  },
+  receitaNome: {
+    fontSize: 20,
+    fontWeight: "800",
+    color: appTheme.colors.textPrimary,
+    marginBottom: 10,
+    fontFamily: appTheme.typography.family,
   },
   receitaFooter: {
     flexDirection: "row",
     alignItems: "center",
-    paddingVertical: 12,
-    paddingHorizontal: 8,
+    paddingTop: 4,
     gap: 12,
-    borderWidth: 1,
-    borderColor: "#dfdfdf",
-    borderBottomLeftRadius: 16,
-    borderBottomRightRadius: 16,
-    backgroundColor: "#ededed52",
   },
   autorAvatar: {
-    width: 44,
-    height: 44,
-    borderRadius: 24,
-    borderWidth: 2,
-    borderColor: "#E96B35",
-    backgroundColor: "#ddd",
+    width: 42,
+    height: 42,
+    borderRadius: appTheme.radius.pill,
+    borderWidth: 1,
+    borderColor: appTheme.colors.primary,
+    backgroundColor: appTheme.colors.primaryTint,
   },
   receitaInfo: {
     flex: 1,
   },
   autorNome: {
-    fontSize: 15,
+    fontSize: 14,
     fontWeight: "700",
-    color: "#222",
-    fontFamily: "Inter-Regular",
+    color: appTheme.colors.textPrimary,
+    fontFamily: appTheme.typography.family,
   },
   receitaData: {
-    fontSize: 13,
-    color: "#888",
-    fontFamily: "Inter-Regular",
-  },
-  favoritosRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 4,
-    marginTop: 2,
-  },
-  favoritosText: {
-    fontSize: 13,
-    color: "#555",
-    fontFamily: "Inter-Regular",
+    fontSize: 12,
+    color: appTheme.colors.textSecondary,
+    fontFamily: appTheme.typography.family,
   },
 });

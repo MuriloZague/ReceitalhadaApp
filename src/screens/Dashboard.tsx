@@ -1,4 +1,5 @@
 import { AppTabParamList, RootStackParamList } from "@/app/(tabs)";
+import { appTheme } from "@/src/styles/appTheme";
 import { Ionicons } from "@expo/vector-icons";
 import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
 import { CompositeNavigationProp } from "@react-navigation/native";
@@ -10,7 +11,6 @@ import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
-  Dimensions,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
@@ -22,8 +22,6 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { auth, database } from "../services/connectionFirebase";
-
-const { width } = Dimensions.get("window");
 
 type NavProp = CompositeNavigationProp<
   BottomTabNavigationProp<AppTabParamList, "DashBoardScreen">,
@@ -58,7 +56,7 @@ export default function DashboardScreen() {
 
       return () => unsubscribe();
     }
-  }, []);
+  }, [user]);
 
   const handleToggleEdit = () => {
     if (isSaving) {
@@ -142,7 +140,9 @@ export default function DashboardScreen() {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#FAFAFA" }}>
+    <SafeAreaView style={styles.safeArea}>
+      <View style={styles.topGlow} />
+
       <KeyboardAvoidingView
         style={styles.keyboardContainer}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -152,6 +152,11 @@ export default function DashboardScreen() {
             style={{ width: 155, height: 30 }}
             source={require("../../assets/images/logoReceitalhada.png")}
           />
+
+          <View style={styles.headerBadge}>
+            <Ionicons name="person-outline" size={14} color="#D4550B" />
+            <Text style={styles.headerBadgeText}>Minha conta</Text>
+          </View>
         </View>
 
         <ScrollView
@@ -164,28 +169,29 @@ export default function DashboardScreen() {
           <TouchableOpacity
             onPress={() => navigation.navigate("InitialScreen")}
             style={styles.backButton}
+            activeOpacity={0.8}
           >
-            <Ionicons name="arrow-back" size={16} color="#888" />
-            <Text style={{ fontSize: 16, fontFamily: "Inter-Regular" }}>
-              Voltar
-            </Text>
+            <Ionicons
+              name="arrow-back"
+              size={16}
+              color={appTheme.colors.textSecondary}
+            />
+            <Text style={styles.backButtonText}>Voltar</Text>
           </TouchableOpacity>
 
           <Text style={styles.pageTitle}>Minha Conta</Text>
+          <Text style={styles.pageSubtitle}>
+            Edite seus dados e acompanhe suas receitas publicadas.
+          </Text>
 
-          <View style={styles.section}>
+          <View style={styles.profileSection}>
             <Image
-              style={{
-                width: 100,
-                height: 100,
-                alignSelf: "center",
-                marginBottom: 26,
-              }}
+              style={styles.profileImage}
               source={require("../../assets/images/profile-icon.svg")}
             />
 
             <View style={styles.sectionHeader}>
-              <Text style={styles.sectionTitle}>Meus Dados:</Text>
+              <Text style={styles.sectionTitle}>Meus dados</Text>
               <TouchableOpacity
                 style={[
                   styles.editButton,
@@ -195,6 +201,11 @@ export default function DashboardScreen() {
                 onPress={handleToggleEdit}
                 disabled={isSaving}
               >
+                <Ionicons
+                  name={isEditing ? "close-outline" : "create-outline"}
+                  size={14}
+                  color={appTheme.colors.primaryDark}
+                />
                 <Text style={styles.editButtonText}>
                   {isEditing ? "Cancelar" : "Editar"}
                 </Text>
@@ -233,7 +244,7 @@ export default function DashboardScreen() {
               >
                 {isSaving ? (
                   <View style={styles.saveButtonContent}>
-                    <ActivityIndicator size="small" color="#E96B35" />
+                    <ActivityIndicator size="small" color="#fff" />
                     <Text style={styles.saveButtonText}>Salvando...</Text>
                   </View>
                 ) : (
@@ -244,7 +255,7 @@ export default function DashboardScreen() {
           </View>
 
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Minhas Receitas:</Text>
+            <Text style={styles.sectionTitle}>Minhas receitas</Text>
 
             <TouchableOpacity
               style={styles.actionButton}
@@ -254,13 +265,17 @@ export default function DashboardScreen() {
               <Ionicons
                 name="restaurant-outline"
                 size={20}
-                color="#E96B35"
+                color={appTheme.colors.primaryDark}
                 style={styles.actionIcon}
               />
               <Text style={styles.actionButtonText}>
                 Acessar Receitas Criadas
               </Text>
-              <Ionicons name="chevron-forward" size={18} color="#E96B35" />
+              <Ionicons
+                name="chevron-forward"
+                size={18}
+                color={appTheme.colors.primaryDark}
+              />
             </TouchableOpacity>
           </View>
 
@@ -278,52 +293,45 @@ export default function DashboardScreen() {
 }
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: appTheme.colors.background,
+  },
+  topGlow: {
+    position: "absolute",
+    width: 250,
+    height: 250,
+    borderRadius: appTheme.radius.pill,
+    backgroundColor: "#FFE7D5",
+    top: -105,
+    right: -95,
+  },
   keyboardContainer: {
     flex: 1,
   },
   header: {
-    paddingHorizontal: 30,
+    paddingHorizontal: 24,
     paddingVertical: 16,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    backgroundColor: "#FAFAFA",
-    borderBottomWidth: 8,
-    borderBottomColor: "#E96B35",
-    paddingBottom: 21,
+    borderBottomWidth: 1,
+    borderBottomColor: appTheme.colors.divider,
   },
-  iconButton: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    backgroundColor: "#E96B35",
-    justifyContent: "center",
+  headerBadge: {
+    flexDirection: "row",
     alignItems: "center",
-    shadowColor: "#E96B35",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 3,
+    gap: 6,
+    backgroundColor: appTheme.colors.primaryTint,
+    borderRadius: appTheme.radius.pill,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
   },
-  iconButtonGray: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    backgroundColor: "#E8E8E8",
-    justifyContent: "center",
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.08,
-    shadowRadius: 4,
-    elevation: 2,
-  },
-  cartIcon: {
-    fontSize: 24,
-  },
-  orangeDivider: {
-    height: 6,
-    backgroundColor: "#E96B35",
+  headerBadgeText: {
+    color: appTheme.colors.primaryDark,
+    fontSize: 12,
+    fontWeight: "700",
+    fontFamily: appTheme.typography.family,
   },
   scrollContainer: {
     flex: 1,
@@ -331,31 +339,64 @@ const styles = StyleSheet.create({
   scrollContent: {
     paddingHorizontal: 24,
     paddingTop: 24,
-    paddingBottom: 32,
+    paddingBottom: 120,
   },
   backButton: {
-    marginBottom: 18,
+    marginBottom: 16,
     flexDirection: "row",
     alignItems: "center",
-    gap: 4,
+    gap: 6,
+    alignSelf: "flex-start",
+  },
+  backButtonText: {
+    fontSize: 15,
+    color: appTheme.colors.textSecondary,
+    fontFamily: appTheme.typography.family,
   },
   pageTitle: {
-    fontSize: 32,
-    fontWeight: "700",
-    color: "#1A1A1A",
-    textAlign: "center",
-    marginBottom: 26,
-    fontFamily: "Inter-Regular",
+    fontSize: 34,
+    fontWeight: "800",
+    color: appTheme.colors.textPrimary,
+    marginBottom: 10,
+    fontFamily: appTheme.typography.family,
+  },
+  pageSubtitle: {
+    fontSize: 15,
+    lineHeight: 22,
+    color: appTheme.colors.textSecondary,
+    marginBottom: 24,
+    fontFamily: appTheme.typography.family,
   },
   section: {
-    marginBottom: 32,
+    marginBottom: 20,
+    backgroundColor: appTheme.colors.surface,
+    borderRadius: appTheme.radius.lg,
+    borderWidth: 1,
+    borderColor: appTheme.colors.border,
+    padding: 18,
+    ...appTheme.shadows.soft,
+  },
+  profileSection: {
+    marginBottom: 20,
+    backgroundColor: appTheme.colors.surface,
+    borderRadius: appTheme.radius.lg,
+    borderWidth: 1,
+    borderColor: appTheme.colors.border,
+    padding: 18,
+    ...appTheme.shadows.soft,
+  },
+  profileImage: {
+    width: 92,
+    height: 92,
+    alignSelf: "center",
+    marginBottom: 20,
   },
   sectionTitle: {
-    fontSize: 20,
-    fontWeight: "900",
-    color: "#1A1A1A",
+    fontSize: 22,
+    fontWeight: "800",
+    color: appTheme.colors.textPrimary,
     marginBottom: 0,
-    fontFamily: "Inter-Regular",
+    fontFamily: appTheme.typography.family,
   },
   sectionHeader: {
     flexDirection: "row",
@@ -364,106 +405,94 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   editButton: {
-    borderWidth: 1,
-    borderColor: "#E96B35",
-    borderRadius: 999,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    borderWidth: 1.2,
+    borderColor: appTheme.colors.primary,
+    borderRadius: appTheme.radius.pill,
     paddingHorizontal: 14,
-    paddingVertical: 6,
-    backgroundColor: "#FFF7F2",
+    paddingVertical: 7,
+    backgroundColor: appTheme.colors.primaryTint,
   },
   editButtonText: {
-    color: "#E96B35",
+    color: appTheme.colors.primaryDark,
     fontSize: 13,
     fontWeight: "700",
-    fontFamily: "Inter-Regular",
+    fontFamily: appTheme.typography.family,
   },
   editButtonDisabled: {
     opacity: 0.65,
   },
   inputContainer: {
-    marginBottom: 16,
+    marginBottom: 12,
   },
   inputLabel: {
     fontSize: 13,
-    fontWeight: "500",
-    color: "#888",
-    marginBottom: 8,
+    fontWeight: "700",
+    color: appTheme.colors.textSecondary,
+    marginBottom: 7,
     letterSpacing: 0.2,
-    fontFamily: "Inter-Regular",
+    fontFamily: appTheme.typography.family,
   },
   input: {
-    backgroundColor: "#FFFFFF",
+    backgroundColor: appTheme.colors.surfaceMuted,
     borderWidth: 1,
-    borderColor: "#E0E0E0",
-    borderRadius: 12,
+    borderColor: appTheme.colors.border,
+    borderRadius: appTheme.radius.sm,
     paddingHorizontal: 16,
     paddingVertical: 14,
     fontSize: 15,
-    fontWeight: "500",
-    color: "#1A1A1A",
-    fontFamily: "Inter-Regular",
+    fontWeight: "600",
+    color: appTheme.colors.textPrimary,
+    fontFamily: appTheme.typography.family,
   },
   inputDisabled: {
-    backgroundColor: "#F6F6F6",
-    color: "#8C8C8C",
+    opacity: 0.82,
   },
   actionButton: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#FFFFFF",
-    borderWidth: 2,
-    borderColor: "#E96B35",
-    borderRadius: 12,
-    paddingHorizontal: 18,
-    paddingVertical: 16,
-    marginVertical: 14,
-    shadowColor: "#E96B35",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.08,
-    shadowRadius: 4,
-    elevation: 2,
+    backgroundColor: appTheme.colors.surfaceMuted,
+    borderWidth: 1,
+    borderColor: appTheme.colors.border,
+    borderRadius: appTheme.radius.sm,
+    paddingHorizontal: 14,
+    paddingVertical: 14,
+    marginTop: 12,
   },
   actionIcon: {
-    fontSize: 22,
-    marginRight: 14,
+    fontSize: 20,
+    marginRight: 10,
   },
   actionButtonText: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#E96B35",
+    fontSize: 15,
+    fontWeight: "700",
+    color: appTheme.colors.primaryDark,
     flex: 1,
-    fontFamily: "Inter-Regular",
+    fontFamily: appTheme.typography.family,
   },
   logoutButton: {
-    backgroundColor: "#E96B35",
-    borderRadius: 12,
+    backgroundColor: appTheme.colors.primary,
+    borderRadius: appTheme.radius.md,
     paddingVertical: 16,
-    shadowColor: "#E96B35",
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.25,
-    shadowRadius: 12,
-    elevation: 6,
+    ...appTheme.shadows.strong,
   },
   logoutButtonText: {
     textAlign: "center",
-    fontSize: 17,
-    fontWeight: "700",
-    color: "white",
-    letterSpacing: 0.5,
-    fontFamily: "Inter-Regular",
+    fontSize: 16,
+    fontWeight: "800",
+    color: appTheme.colors.white,
+    fontFamily: appTheme.typography.family,
   },
   saveButton: {
-    backgroundColor: "#FFFFFF",
-    borderWidth: 2,
-    borderColor: "#E96B35",
-    borderRadius: 12,
-    paddingVertical: 16,
-    marginBottom: 14,
-    shadowColor: "#E96B35",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.12,
-    shadowRadius: 8,
-    elevation: 3,
+    marginTop: 6,
+    backgroundColor: appTheme.colors.primary,
+    borderRadius: appTheme.radius.sm,
+    minHeight: 52,
+    justifyContent: "center",
+    alignItems: "center",
+    ...appTheme.shadows.strong,
   },
   saveButtonDisabled: {
     opacity: 0.7,
@@ -476,10 +505,9 @@ const styles = StyleSheet.create({
   },
   saveButtonText: {
     textAlign: "center",
-    fontSize: 17,
-    fontWeight: "700",
-    color: "#E96B35",
-    letterSpacing: 0.5,
-    fontFamily: "Inter-Regular",
+    fontSize: 16,
+    fontWeight: "800",
+    color: appTheme.colors.white,
+    fontFamily: appTheme.typography.family,
   },
 });
