@@ -1,18 +1,21 @@
-import { database } from "../services/connectionFirebase";
-import { ref, push, get, update, remove } from "firebase/database";
+import { get, push, ref, remove, update } from "firebase/database";
 import { Recipe } from "../models/Recipe";
+import { database } from "../services/connectionFirebase";
 
-const PATH = "recipes";
+const getUserRecipesPath = (userId: string) => `users/${userId}/recipes`;
 
 export const recipeService = {
-  async create(recipe: Recipe) {
-    const recipeRef = ref(database, PATH);
+  async create(userId: string, recipe: Recipe) {
+    const recipeRef = ref(database, getUserRecipesPath(userId));
     await push(recipeRef, recipe);
   },
 
-  async getAll(): Promise<Recipe[]> {
-    const snapshot = await get(ref(database, PATH));
+  async getAll(userId: string): Promise<Recipe[]> {
+    const snapshot = await get(ref(database, getUserRecipesPath(userId)));
     const data = snapshot.val();
+    if (!data) {
+      return [];
+    }
 
     const recipes: Recipe[] = [];
 
@@ -23,14 +26,13 @@ export const recipeService = {
     return recipes;
   },
 
-  async update(id: string, product: Recipe) {
-    const productRef = ref(database, `${PATH}/${id}`);
-    await update(productRef, product);
+  async update(userId: string, id: string, recipe: Recipe) {
+    const recipeRef = ref(database, `${getUserRecipesPath(userId)}/${id}`);
+    await update(recipeRef, recipe);
   },
 
-  async delete(id: string) {
-    const productRef = ref(database, `${PATH}/${id}`);
-    await remove(productRef);
+  async delete(userId: string, id: string) {
+    const recipeRef = ref(database, `${getUserRecipesPath(userId)}/${id}`);
+    await remove(recipeRef);
   },
-  
 };

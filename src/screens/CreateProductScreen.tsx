@@ -17,7 +17,9 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { Recipe } from "../models/Recipe";
 import { auth } from "../services/connectionFirebase";
+import { recipeService } from "../services/recipesService";
 
 type NavProp = BottomTabNavigationProp<AppTabParamList, "CreateProductScreen">;
 
@@ -30,31 +32,53 @@ export default function CreateProductScreen() {
   const [ingredients, setIngredients] = useState("");
   const [instructions, setInstructions] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const handleCreateRecipe = () => {
+  const validate = () => {
+    const newErrors: Record<string, string> = {};
     const finalRecipeName = recipeName.trim();
     const finalCategory = category.trim();
     const finalPrepTime = prepTime.trim();
     const finalIngredients = ingredients.trim();
     const finalInstructions = instructions.trim();
 
-    if (
-      !finalRecipeName ||
-      !finalCategory ||
-      !finalPrepTime ||
-      !finalIngredients ||
-      !finalInstructions
-    ) {
-      Alert.alert("Atenção", "Preencha todos os campos da receita.");
-      return;
+    if (!finalRecipeName)
+      newErrors.recipeName = "Nome da receita e obrigatorio.";
+    if (!finalCategory) newErrors.category = "Categoria e obrigatoria.";
+    if (!finalIngredients)
+      newErrors.ingredients = "Ingredientes sao obrigatorios.";
+    if (!finalInstructions)
+      newErrors.instructions = "Modo de preparo e obrigatorio.";
+
+    if (!finalPrepTime) {
+      newErrors.prepTime = "Tempo de preparo e obrigatorio.";
+    } else if (Number.isNaN(Number(finalPrepTime))) {
+      newErrors.prepTime = "Tempo de preparo deve ser numerico.";
+    } else if (Number(finalPrepTime) <= 0) {
+      newErrors.prepTime = "Tempo de preparo deve ser maior que zero.";
     }
 
-    const prepTimeValue = Number(finalPrepTime);
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
-    if (Number.isNaN(prepTimeValue) || prepTimeValue <= 0) {
-      Alert.alert("Atenção", "Informe um tempo de preparo válido em minutos.");
-      return;
-    }
+  const clearFields = () => {
+    setRecipeName("");
+    setCategory("");
+    setPrepTime("");
+    setIngredients("");
+    setInstructions("");
+    setErrors({});
+  };
+
+  const handleCreateRecipe = async () => {
+    if (!validate()) return;
+
+    const finalRecipeName = recipeName.trim();
+    const finalCategory = category.trim();
+    const finalPrepTime = prepTime.trim();
+    const finalIngredients = ingredients.trim();
+    const finalInstructions = instructions.trim();
 
     const user = auth.currentUser;
 
@@ -65,16 +89,23 @@ export default function CreateProductScreen() {
 
     setIsSubmitting(true);
 
-    // Estrutura mantida como mock ate a integracao final com o Firebase.
-    setTimeout(() => {
-      setIsSubmitting(false);
+    const recipe: Recipe = {
+      recipeName: finalRecipeName,
+      category: finalCategory,
+      prepTime: Number(finalPrepTime),
+      ingredients: finalIngredients,
+      instructions: finalInstructions,
+    };
+
+    try {
+      await recipeService.create(user.uid, recipe);
+      clearFields();
       Alert.alert("Sucesso", "Receita cadastrada com sucesso!");
-      setRecipeName("");
-      setCategory("");
-      setPrepTime("");
-      setIngredients("");
-      setInstructions("");
-    }, 800);
+    } catch {
+      Alert.alert("Erro", "Nao foi possivel cadastrar a receita.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -126,10 +157,18 @@ export default function CreateProductScreen() {
                   placeholder="Ex: Bolo de Cenoura"
                   placeholderTextColor={appTheme.colors.textMuted}
                   value={recipeName}
-                  onChangeText={setRecipeName}
+                  onChangeText={(text) => {
+                    setRecipeName(text);
+                    if (errors.recipeName) {
+                      setErrors((prev) => ({ ...prev, recipeName: "" }));
+                    }
+                  }}
                   editable={!isSubmitting}
                 />
               </View>
+              {!!errors.recipeName && (
+                <Text style={styles.errorText}>{errors.recipeName}</Text>
+              )}
 
               <Text style={styles.labelText}>Categoria</Text>
               <View style={styles.inputContainer}>
@@ -143,10 +182,18 @@ export default function CreateProductScreen() {
                   placeholder="Ex: Doces"
                   placeholderTextColor={appTheme.colors.textMuted}
                   value={category}
-                  onChangeText={setCategory}
+                  onChangeText={(text) => {
+                    setCategory(text);
+                    if (errors.category) {
+                      setErrors((prev) => ({ ...prev, category: "" }));
+                    }
+                  }}
                   editable={!isSubmitting}
                 />
               </View>
+              {!!errors.category && (
+                <Text style={styles.errorText}>{errors.category}</Text>
+              )}
 
               <Text style={styles.labelText}>Tempo de Preparo (min)</Text>
               <View style={styles.inputContainer}>
@@ -160,11 +207,19 @@ export default function CreateProductScreen() {
                   placeholder="Ex: 45"
                   placeholderTextColor={appTheme.colors.textMuted}
                   value={prepTime}
-                  onChangeText={setPrepTime}
+                  onChangeText={(text) => {
+                    setPrepTime(text);
+                    if (errors.prepTime) {
+                      setErrors((prev) => ({ ...prev, prepTime: "" }));
+                    }
+                  }}
                   keyboardType="number-pad"
                   editable={!isSubmitting}
                 />
               </View>
+              {!!errors.prepTime && (
+                <Text style={styles.errorText}>{errors.prepTime}</Text>
+              )}
 
               <Text style={styles.labelText}>Ingredientes</Text>
               <View style={[styles.inputContainer, styles.textAreaContainer]}>
@@ -173,12 +228,20 @@ export default function CreateProductScreen() {
                   placeholder="Ex: 2 cenouras, 3 ovos, 2 xicaras de farinha..."
                   placeholderTextColor={appTheme.colors.textMuted}
                   value={ingredients}
-                  onChangeText={setIngredients}
+                  onChangeText={(text) => {
+                    setIngredients(text);
+                    if (errors.ingredients) {
+                      setErrors((prev) => ({ ...prev, ingredients: "" }));
+                    }
+                  }}
                   editable={!isSubmitting}
                   multiline
                   textAlignVertical="top"
                 />
               </View>
+              {!!errors.ingredients && (
+                <Text style={styles.errorText}>{errors.ingredients}</Text>
+              )}
 
               <Text style={styles.labelText}>Modo de Preparo</Text>
               <View style={[styles.inputContainer, styles.textAreaContainer]}>
@@ -187,12 +250,20 @@ export default function CreateProductScreen() {
                   placeholder="Descreva o passo a passo da receita"
                   placeholderTextColor={appTheme.colors.textMuted}
                   value={instructions}
-                  onChangeText={setInstructions}
+                  onChangeText={(text) => {
+                    setInstructions(text);
+                    if (errors.instructions) {
+                      setErrors((prev) => ({ ...prev, instructions: "" }));
+                    }
+                  }}
                   editable={!isSubmitting}
                   multiline
                   textAlignVertical="top"
                 />
               </View>
+              {!!errors.instructions && (
+                <Text style={styles.errorText}>{errors.instructions}</Text>
+              )}
 
               <TouchableOpacity
                 style={[
@@ -302,6 +373,12 @@ const styles = StyleSheet.create({
     color: appTheme.colors.textSecondary,
     fontWeight: "700",
     letterSpacing: 0.2,
+    fontFamily: appTheme.typography.family,
+  },
+  errorText: {
+    color: "#D92D20",
+    fontSize: 12,
+    marginBottom: 6,
     fontFamily: appTheme.typography.family,
   },
   inputContainer: {

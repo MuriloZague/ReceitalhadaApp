@@ -1,7 +1,6 @@
 import { appTheme } from "@/src/styles/appTheme";
 import { Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
-import { onValue, ref } from "firebase/database";
 import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
@@ -11,55 +10,30 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { auth, database } from "../services/connectionFirebase";
-
-type UserRecipe = {
-  id: string;
-  nomeReceita: string;
-  categoria: string;
-  tempoPreparo: string | number;
-  modoPreparo: string;
-  ingredientes: string;
-};
+import { Recipe } from "../models/Recipe";
+import { auth } from "../services/connectionFirebase";
+import { recipeService } from "../services/recipesService";
 
 export default function UserRecipesModalScreen() {
-  const [recipes, setRecipes] = useState<UserRecipe[]>([]);
+  const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
+  const loadProducts = async () => {
     const user = auth.currentUser;
 
     if (!user) {
+      setRecipes([]);
       setIsLoading(false);
       return;
     }
 
-    const recipesRef = ref(database, `users/${user.uid}/recipes`);
+    const data = await recipeService.getAll(user.uid);
+    setRecipes(data);
+    setIsLoading(false);
+  };
 
-    const unsubscribe = onValue(recipesRef, (snapshot) => {
-      if (!snapshot.exists()) {
-        setRecipes([]);
-        setIsLoading(false);
-        return;
-      }
-
-      const data = snapshot.val() as Record<string, Partial<UserRecipe>>;
-      const formattedRecipes: UserRecipe[] = Object.entries(data).map(
-        ([id, recipe]) => ({
-          id,
-          nomeReceita: recipe.nomeReceita || "Sem titulo",
-          categoria: recipe.categoria || "Sem categoria",
-          tempoPreparo: String(recipe.tempoPreparo || "-"),
-          modoPreparo: recipe.modoPreparo || "-",
-          ingredientes: recipe.ingredientes || "-",
-        }),
-      );
-
-      setRecipes(formattedRecipes);
-      setIsLoading(false);
-    });
-
-    return () => unsubscribe();
+  useEffect(() => {
+    loadProducts();
   }, []);
 
   return (
@@ -108,11 +82,11 @@ export default function UserRecipesModalScreen() {
         ) : (
           <FlatList
             data={recipes}
-            keyExtractor={(item) => item.id}
+            keyExtractor={(item) => item.id!}
             contentContainerStyle={styles.listContent}
             renderItem={({ item }) => (
               <View style={styles.recipeCard}>
-                <Text style={styles.recipeTitle}>{item.nomeReceita}</Text>
+                <Text style={styles.recipeTitle}>{item.recipeName}</Text>
 
                 <View style={styles.metaRow}>
                   <View style={styles.metaPill}>
@@ -121,7 +95,7 @@ export default function UserRecipesModalScreen() {
                       size={13}
                       color={appTheme.colors.primaryDark}
                     />
-                    <Text style={styles.metaPillText}>{item.categoria}</Text>
+                    <Text style={styles.metaPillText}>{item.category}</Text>
                   </View>
                   <View style={styles.metaPill}>
                     <Ionicons
@@ -129,18 +103,16 @@ export default function UserRecipesModalScreen() {
                       size={13}
                       color={appTheme.colors.primaryDark}
                     />
-                    <Text style={styles.metaPillText}>
-                      {item.tempoPreparo} min
-                    </Text>
+                    <Text style={styles.metaPillText}>{item.prepTime} min</Text>
                   </View>
                 </View>
 
                 <Text style={styles.recipeMetaLabel}>Ingredientes</Text>
-                <Text style={styles.recipeMeta}>{item.ingredientes}</Text>
+                <Text style={styles.recipeMeta}>{item.ingredients}</Text>
 
                 <Text style={styles.recipeMetaLabel}>Modo de preparo</Text>
                 <Text numberOfLines={3} style={styles.recipeMeta}>
-                  {item.modoPreparo}
+                  {item.instructions}
                 </Text>
               </View>
             )}
