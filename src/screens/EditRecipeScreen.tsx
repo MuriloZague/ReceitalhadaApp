@@ -1,36 +1,42 @@
-import { AppTabParamList } from "@/app/(tabs)";
+import { RootStackParamList } from "@/app/(tabs)";
 import { appTheme } from "@/src/styles/appTheme";
 import { Ionicons } from "@expo/vector-icons";
-import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
+import { RouteProp, useRoute } from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
 import { Image } from "expo-image";
 import { useNavigation } from "expo-router";
 import React, { useState } from "react";
 import {
-  Alert,
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
+    Alert,
+    KeyboardAvoidingView,
+    Platform,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Recipe } from "../models/Recipe";
 import { auth } from "../services/connectionFirebase";
 import { recipeService } from "../services/recipesService";
 
-type NavProp = BottomTabNavigationProp<AppTabParamList, "CreateProductScreen">;
+type NavProp = StackNavigationProp<RootStackParamList, "EditRecipeScreen">;
+type EditRecipeRouteProp = RouteProp<RootStackParamList, "EditRecipeScreen">;
 
-export default function CreateProductScreen() {
+export default function EditRecipeScreen() {
   const navigation = useNavigation<NavProp>();
+  const route = useRoute<EditRecipeRouteProp>();
+  const { recipe } = route.params;
 
-  const [recipeName, setRecipeName] = useState("");
-  const [category, setCategory] = useState("");
-  const [prepTime, setPrepTime] = useState("");
-  const [ingredients, setIngredients] = useState("");
-  const [instructions, setInstructions] = useState("");
+  const [recipeName, setRecipeName] = useState(recipe.recipeName || "");
+  const [category, setCategory] = useState(recipe.category || "");
+  const [prepTime, setPrepTime] = useState(
+    recipe.prepTime ? String(recipe.prepTime) : "",
+  );
+  const [ingredients, setIngredients] = useState(recipe.ingredients || "");
+  const [instructions, setInstructions] = useState(recipe.instructions || "");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -42,13 +48,18 @@ export default function CreateProductScreen() {
     const finalIngredients = ingredients.trim();
     const finalInstructions = instructions.trim();
 
-    if (!finalRecipeName)
+    if (!finalRecipeName) {
       newErrors.recipeName = "Nome da receita e obrigatorio.";
-    if (!finalCategory) newErrors.category = "Categoria e obrigatoria.";
-    if (!finalIngredients)
+    }
+    if (!finalCategory) {
+      newErrors.category = "Categoria e obrigatoria.";
+    }
+    if (!finalIngredients) {
       newErrors.ingredients = "Ingredientes sao obrigatorios.";
-    if (!finalInstructions)
+    }
+    if (!finalInstructions) {
       newErrors.instructions = "Modo de preparo e obrigatorio.";
+    }
 
     if (!finalPrepTime) {
       newErrors.prepTime = "Tempo de preparo e obrigatorio.";
@@ -62,47 +73,41 @@ export default function CreateProductScreen() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const clearFields = () => {
-    setRecipeName("");
-    setCategory("");
-    setPrepTime("");
-    setIngredients("");
-    setInstructions("");
-    setErrors({});
-  };
-
-  const handleCreateRecipe = async () => {
+  const handleUpdateRecipe = async () => {
     if (!validate()) return;
-
-    const finalRecipeName = recipeName.trim();
-    const finalCategory = category.trim();
-    const finalPrepTime = prepTime.trim();
-    const finalIngredients = ingredients.trim();
-    const finalInstructions = instructions.trim();
 
     const user = auth.currentUser;
 
     if (!user) {
-      Alert.alert("Erro", "Usuário não autenticado.");
+      Alert.alert("Erro", "Usuario nao autenticado.");
+      return;
+    }
+
+    if (!recipe.id) {
+      Alert.alert("Erro", "Receita invalida para edicao.");
       return;
     }
 
     setIsSubmitting(true);
 
-    const recipe: Recipe = {
-      recipeName: finalRecipeName,
-      category: finalCategory,
-      prepTime: Number(finalPrepTime),
-      ingredients: finalIngredients,
-      instructions: finalInstructions,
+    const updatedRecipe: Recipe = {
+      recipeName: recipeName.trim(),
+      category: category.trim(),
+      prepTime: Number(prepTime.trim()),
+      ingredients: ingredients.trim(),
+      instructions: instructions.trim(),
     };
 
     try {
-      await recipeService.create(user.uid, recipe);
-      clearFields();
-      Alert.alert("Sucesso", "Receita cadastrada com sucesso!");
+      await recipeService.update(user.uid, recipe.id, updatedRecipe);
+      Alert.alert("Sucesso", "Receita atualizada com sucesso!", [
+        {
+          text: "OK",
+          onPress: () => navigation.goBack(),
+        },
+      ]);
     } catch {
-      Alert.alert("Erro", "Nao foi possivel cadastrar a receita.");
+      Alert.alert("Erro", "Nao foi possivel atualizar a receita.");
     } finally {
       setIsSubmitting(false);
     }
@@ -111,18 +116,6 @@ export default function CreateProductScreen() {
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.topGlow} />
-
-      <View style={styles.headerApp}>
-        <Image
-          style={{ width: 155, height: 30 }}
-          source={require("../../assets/images/logoReceitalhada.png")}
-        />
-
-        <View style={styles.headerBadge}>
-          <Ionicons name="sparkles-outline" size={14} color="#D4550B" />
-          <Text style={styles.headerBadgeText}>Criar</Text>
-        </View>
-      </View>
 
       <KeyboardAvoidingView
         style={styles.keyboardContainer}
@@ -136,12 +129,12 @@ export default function CreateProductScreen() {
         >
           <View style={styles.formContainer}>
             <Text style={styles.titleForm}>
-              Publique sua
-              <Text style={styles.titleAccent}> nova receita</Text>
+              Edite sua
+              <Text style={styles.titleAccent}> receita</Text>
             </Text>
             <Text style={styles.subtitleForm}>
-              Compartilhe ingredientes, preparo e tempo para inspirar outras
-              pessoas na cozinha.
+              Atualize os campos da receita para manter suas informacoes sempre
+              corretas.
             </Text>
 
             <View style={styles.formContent}>
@@ -271,20 +264,20 @@ export default function CreateProductScreen() {
                   isSubmitting && styles.submitBtnDisabled,
                 ]}
                 activeOpacity={0.8}
-                onPress={handleCreateRecipe}
+                onPress={handleUpdateRecipe}
                 disabled={isSubmitting}
               >
                 <Text style={styles.submitBtnText}>
-                  {isSubmitting ? "Salvando..." : "Cadastrar Receita"}
+                  {isSubmitting ? "Salvando..." : "Salvar Alteracoes"}
                 </Text>
               </TouchableOpacity>
 
               <TouchableOpacity
-                style={styles.goToHomeButton}
+                style={styles.goBackButton}
                 activeOpacity={0.8}
-                onPress={() => navigation.navigate("InitialScreen")}
+                onPress={() => navigation.goBack()}
               >
-                <Text style={styles.goToHomeText}>Voltar para inicio</Text>
+                <Text style={styles.goBackText}>Voltar</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -314,15 +307,7 @@ const styles = StyleSheet.create({
   scrollContent: {
     paddingBottom: 110,
   },
-  headerApp: {
-    paddingHorizontal: 24,
-    paddingVertical: 16,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    borderBottomWidth: 1,
-    borderBottomColor: appTheme.colors.divider,
-  },
+
   headerBadge: {
     flexDirection: "row",
     alignItems: "center",
@@ -429,11 +414,11 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontFamily: appTheme.typography.family,
   },
-  goToHomeButton: {
+  goBackButton: {
     marginTop: 10,
     alignItems: "center",
   },
-  goToHomeText: {
+  goBackText: {
     color: appTheme.colors.primaryDark,
     textDecorationLine: "underline",
     fontWeight: "700",

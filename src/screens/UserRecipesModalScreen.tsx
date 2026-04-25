@@ -1,66 +1,51 @@
+import { RootStackParamList } from "@/app/(tabs)";
 import { appTheme } from "@/src/styles/appTheme";
 import { Ionicons } from "@expo/vector-icons";
+import { StackNavigationProp } from "@react-navigation/stack";
 import { Image } from "expo-image";
-import { onValue, ref } from "firebase/database";
+import { useNavigation } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { auth, database } from "../services/connectionFirebase";
+import { Recipe } from "../models/Recipe";
+import { auth } from "../services/connectionFirebase";
+import { recipeService } from "../services/recipesService";
 
-type UserRecipe = {
-  id: string;
-  nomeReceita: string;
-  categoria: string;
-  tempoPreparo: string | number;
-  modoPreparo: string;
-  ingredientes: string;
-};
+type NavProp = StackNavigationProp<RootStackParamList>;
 
 export default function UserRecipesModalScreen() {
-  const [recipes, setRecipes] = useState<UserRecipe[]>([]);
+  const navigation = useNavigation<NavProp>();
+  const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
+  const loadProducts = async () => {
     const user = auth.currentUser;
 
     if (!user) {
+      setRecipes([]);
       setIsLoading(false);
       return;
     }
 
-    const recipesRef = ref(database, `users/${user.uid}/recipes`);
+    const data = await recipeService.getAll(user.uid);
+    setRecipes(data);
+    setIsLoading(false);
+  };
 
-    const unsubscribe = onValue(recipesRef, (snapshot) => {
-      if (!snapshot.exists()) {
-        setRecipes([]);
-        setIsLoading(false);
-        return;
-      }
-
-      const data = snapshot.val() as Record<string, Partial<UserRecipe>>;
-      const formattedRecipes: UserRecipe[] = Object.entries(data).map(
-        ([id, recipe]) => ({
-          id,
-          nomeReceita: recipe.nomeReceita || "Sem titulo",
-          categoria: recipe.categoria || "Sem categoria",
-          tempoPreparo: String(recipe.tempoPreparo || "-"),
-          modoPreparo: recipe.modoPreparo || "-",
-          ingredientes: recipe.ingredientes || "-",
-        }),
-      );
-
-      setRecipes(formattedRecipes);
-      setIsLoading(false);
-    });
-
-    return () => unsubscribe();
+  useEffect(() => {
+    loadProducts();
   }, []);
+
+  const handleEditRecipe = (recipe: Recipe) => {
+    navigation.navigate("EditRecipeScreen", { recipe });
+  };
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -108,11 +93,11 @@ export default function UserRecipesModalScreen() {
         ) : (
           <FlatList
             data={recipes}
-            keyExtractor={(item) => item.id}
+            keyExtractor={(item) => item.id!}
             contentContainerStyle={styles.listContent}
             renderItem={({ item }) => (
               <View style={styles.recipeCard}>
-                <Text style={styles.recipeTitle}>{item.nomeReceita}</Text>
+                <Text style={styles.recipeTitle}>{item.recipeName}</Text>
 
                 <View style={styles.metaRow}>
                   <View style={styles.metaPill}>
@@ -121,7 +106,7 @@ export default function UserRecipesModalScreen() {
                       size={13}
                       color={appTheme.colors.primaryDark}
                     />
-                    <Text style={styles.metaPillText}>{item.categoria}</Text>
+                    <Text style={styles.metaPillText}>{item.category}</Text>
                   </View>
                   <View style={styles.metaPill}>
                     <Ionicons
@@ -129,19 +114,32 @@ export default function UserRecipesModalScreen() {
                       size={13}
                       color={appTheme.colors.primaryDark}
                     />
-                    <Text style={styles.metaPillText}>
-                      {item.tempoPreparo} min
-                    </Text>
+                    <Text style={styles.metaPillText}>{item.prepTime} min</Text>
                   </View>
                 </View>
 
                 <Text style={styles.recipeMetaLabel}>Ingredientes</Text>
-                <Text style={styles.recipeMeta}>{item.ingredientes}</Text>
+                <Text style={styles.recipeMeta}>{item.ingredients}</Text>
 
                 <Text style={styles.recipeMetaLabel}>Modo de preparo</Text>
                 <Text numberOfLines={3} style={styles.recipeMeta}>
-                  {item.modoPreparo}
+                  {item.instructions}
                 </Text>
+
+                <View style={styles.actionsRow}>
+                  <TouchableOpacity
+                    style={styles.editButton}
+                    activeOpacity={0.8}
+                    onPress={() => handleEditRecipe(item)}
+                  >
+                    <Ionicons
+                      name="create-outline"
+                      size={14}
+                      color={appTheme.colors.primaryDark}
+                    />
+                    <Text style={styles.editButtonText}>Editar</Text>
+                  </TouchableOpacity>
+                </View>
               </View>
             )}
           />
@@ -266,6 +264,27 @@ const styles = StyleSheet.create({
     color: appTheme.colors.textSecondary,
     marginBottom: 10,
     lineHeight: 20,
+    fontFamily: appTheme.typography.family,
+  },
+  actionsRow: {
+    flexDirection: "row",
+    marginTop: 2,
+  },
+  editButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    borderWidth: 1.2,
+    borderColor: appTheme.colors.primary,
+    borderRadius: appTheme.radius.pill,
+    paddingHorizontal: 14,
+    paddingVertical: 7,
+    backgroundColor: appTheme.colors.primaryTint,
+  },
+  editButtonText: {
+    color: appTheme.colors.primaryDark,
+    fontSize: 13,
+    fontWeight: "700",
     fontFamily: appTheme.typography.family,
   },
   centerState: {
