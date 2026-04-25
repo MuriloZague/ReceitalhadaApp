@@ -1,3 +1,4 @@
+import { Recipe } from "@/src/models/Recipe";
 import DashboardScreen from "@/src/screens/Dashboard";
 import HomeScreen from "@/src/screens/Home";
 import InitialScreen from "@/src/screens/InitialScreen";
@@ -9,6 +10,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigatorScreenParams } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import CreateProductScreen from "../../src/screens/CreateProductScreen";
+import EditRecipeScreen from "../../src/screens/EditRecipeScreen";
 import UserRecipesModalScreen from "../../src/screens/UserRecipesModalScreen";
 
 export type RootStackParamList = {
@@ -17,6 +19,7 @@ export type RootStackParamList = {
   LoginScreen: undefined;
   AppTabs: NavigatorScreenParams<AppTabParamList>;
   UserRecipesModalScreen: undefined;
+  EditRecipeScreen: { recipe: Recipe };
 };
 
 export type AppTabParamList = {
@@ -51,7 +54,7 @@ function AppTabs() {
           paddingBottom: 10,
           paddingTop: 8,
           ...appTheme.shadows.strong,
-          marginHorizontal: 12
+          marginHorizontal: 12,
         },
         tabBarLabelStyle: {
           fontFamily: appTheme.typography.family,
@@ -119,6 +122,26 @@ export default function RootStack() {
           presentation: "modal",
           headerShown: true,
           title: "Receitas Criadas",
+          headerStyle: {
+            backgroundColor: appTheme.colors.surface,
+          },
+          headerTintColor: appTheme.colors.primaryDark,
+          headerTitleStyle: {
+            color: appTheme.colors.textPrimary,
+            fontFamily: appTheme.typography.family,
+            fontWeight: "700",
+          },
+          headerShadowVisible: false,
+        }}
+      />
+
+      <Stack.Screen
+        name="EditRecipeScreen"
+        component={EditRecipeScreen}
+        options={{
+          presentation: "modal",
+          headerShown: true,
+          title: "Editar Receita",
           headerStyle: {
             backgroundColor: appTheme.colors.surface,
           },

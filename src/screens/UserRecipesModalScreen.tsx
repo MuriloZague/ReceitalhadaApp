@@ -1,12 +1,16 @@
+import { RootStackParamList } from "@/app/(tabs)";
 import { appTheme } from "@/src/styles/appTheme";
 import { Ionicons } from "@expo/vector-icons";
+import { StackNavigationProp } from "@react-navigation/stack";
 import { Image } from "expo-image";
+import { useNavigation } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -14,7 +18,10 @@ import { Recipe } from "../models/Recipe";
 import { auth } from "../services/connectionFirebase";
 import { recipeService } from "../services/recipesService";
 
+type NavProp = StackNavigationProp<RootStackParamList>;
+
 export default function UserRecipesModalScreen() {
+  const navigation = useNavigation<NavProp>();
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -35,6 +42,10 @@ export default function UserRecipesModalScreen() {
   useEffect(() => {
     loadProducts();
   }, []);
+
+  const handleEditRecipe = (recipe: Recipe) => {
+    navigation.navigate("EditRecipeScreen", { recipe });
+  };
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -114,6 +125,21 @@ export default function UserRecipesModalScreen() {
                 <Text numberOfLines={3} style={styles.recipeMeta}>
                   {item.instructions}
                 </Text>
+
+                <View style={styles.actionsRow}>
+                  <TouchableOpacity
+                    style={styles.editButton}
+                    activeOpacity={0.8}
+                    onPress={() => handleEditRecipe(item)}
+                  >
+                    <Ionicons
+                      name="create-outline"
+                      size={14}
+                      color={appTheme.colors.primaryDark}
+                    />
+                    <Text style={styles.editButtonText}>Editar</Text>
+                  </TouchableOpacity>
+                </View>
               </View>
             )}
           />
@@ -238,6 +264,27 @@ const styles = StyleSheet.create({
     color: appTheme.colors.textSecondary,
     marginBottom: 10,
     lineHeight: 20,
+    fontFamily: appTheme.typography.family,
+  },
+  actionsRow: {
+    flexDirection: "row",
+    marginTop: 2,
+  },
+  editButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    borderWidth: 1.2,
+    borderColor: appTheme.colors.primary,
+    borderRadius: appTheme.radius.pill,
+    paddingHorizontal: 14,
+    paddingVertical: 7,
+    backgroundColor: appTheme.colors.primaryTint,
+  },
+  editButtonText: {
+    color: appTheme.colors.primaryDark,
+    fontSize: 13,
+    fontWeight: "700",
     fontFamily: appTheme.typography.family,
   },
   centerState: {
